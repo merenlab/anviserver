@@ -63,6 +63,7 @@ $(document).ready(function() {
 
     function showPercent(percent) {
         $('#modalUploading .modal-header').text('Uploading... (' + percent +'%)');
+        $('#modalUploading .progress-bar').css('width', percent + '%');        
     }
 
     $('form').ajaxForm({
@@ -78,6 +79,7 @@ $(document).ready(function() {
         },
         complete: function(xhr) {
             showPercent('100');
+            window.location.href = '/projects';
         }
     }); 
 

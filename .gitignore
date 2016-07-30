@@ -2,3 +2,4 @@
 userdata/
 db.sqlite3
 anviserver/settings_secrets.py
+main/static/interactive
