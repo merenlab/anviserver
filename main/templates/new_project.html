@@ -1,0 +1,66 @@
+{% extends 'index.html' %} {% block title %}New Project{% endblock %} {% block content %}
+<div class="page-header">
+    <h1>New Project</h1>
+</div>
+<form method="post" action="" class="form-horizontal" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="panel panel-default panel-center">
+        <div class="panel-heading">
+            <h3 class="panel-title">Step 1 - Project Details</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Name (*)</label>
+                <div class="col-md-9">
+                    <input class="form-control" id="name" maxlength="100" name="name" placeholder="Name" required="required" title="" type="text" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Description</label>
+                <div class="col-md-9">
+                    <textarea class="form-control" id="name" maxlength="100" name="name" placeholder="Name" required="required" title="" type="text"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default panel-center">
+        <div class="panel-heading">
+            <h3 class="panel-title">Step 2 - Essential Files</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Tree (*)</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary">
+                Browse&hellip; <input type="file" style="display: none;" id="treeFile" name="treeFile" /></span>
+                        </label>
+                        <input type="text" class="form-control fileUploadTxt" id="txtTreeFile" readonly value="Newick-formatted tree file." />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Data</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary">
+                Browse&hellip; <input type="file" style="display: none;" id="dataFile" name="dataFile" /></span>
+                        </label>
+                        <input type="text" class="form-control fileUploadTxt" id="txtDataFile" readonly value="TAB-Delimited data file." d/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="submit" value="Create" class="btn btn-primary" />
+</form>
+{% endblock %}
+{% block header %}
+{% load staticfiles %}
+<script src="{% static 'js/newick_parser.js' %}"></script>
+<script src="{% static 'js/papaparse.min.js' %}"></script>
+<script src="{% static 'js/new_project.js' %}"></script>
+{% endblock %}
+

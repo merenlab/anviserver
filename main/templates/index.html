@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% block body %}
+<div class="container">
+    <div id="content" class="row">
+        <div class="sidebar col-sm-3 col-md-3">
+            <div class="list-group table-of-contents">
+                <a href="/" class="list-group-item">Welcome</a>
+                <a href="{% url 'projects' %}" class="list-group-item">My Projects</a>
+                <a href="#" class="list-group-item">Shared with me</a>
+                <a href="#" class="list-group-item">Help</a>
+                <a href="#" class="list-group-item">Contact us</a>
+            </div>
+        </div>
+        <div class="main col-sm-8 col-md-8">
+            {% block content %}
+                <h1>Welcome to Anvio Server!</h1>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

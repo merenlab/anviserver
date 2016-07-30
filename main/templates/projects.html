@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{% block title %}My Projects{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>My Projects</h1>
+</div>
+  {% for project in projects %}
+          <div class="panel panel-default panel-center">
+          <div class="panel-heading">
+            <h3 class="panel-title"><a href="{% url 'project' project.user.username project.name %}">{{ project.name }}</a><span class="label label-warning">Public</span></h3>
+          </div>
+          <div class="panel-body">
+          	Created: {{ project.created_at }}
+          </div>
+        </div>
+  {% endfor %}
+  <a href="{% url 'new_project' %}"><button class="btn btn-primary">New Project</button></a>
+{% endblock %}

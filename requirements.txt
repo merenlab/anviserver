@@ -1,0 +1,4 @@
+Django==1.9.8
+django-bootstrap3==7.0.1
+django-registration-redux==1.4
+django-sendfile==0.3.10
