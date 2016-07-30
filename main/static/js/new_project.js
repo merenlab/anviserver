@@ -60,4 +60,25 @@ $(document).ready(function() {
             reader.readAsText(file);
         }
     });
+
+    function showPercent(percent) {
+        $('#modalUploading .modal-header').text('Uploading... (' + percent +'%)');
+    }
+
+    $('form').ajaxForm({
+        beforeSend: function() {
+            $('#modalUploading').modal();
+            showPercent(0);
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+            showPercent(percentComplete);
+        },
+        success: function() {
+            showPercent('100');
+        },
+        complete: function(xhr) {
+            showPercent('100');
+        }
+    }); 
+
 });
