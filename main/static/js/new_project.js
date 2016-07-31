@@ -67,7 +67,6 @@ $(document).ready(function() {
     }
 
     $('form').ajaxForm({
-        type: 'post',
         beforeSend: function() {
             $('#modalUploading').modal();
             showPercent(0);

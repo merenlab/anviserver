@@ -2,7 +2,7 @@
 <div class="page-header">
     <h1>New Project</h1>
 </div>
-<form method="post" action="" class="form-horizontal" enctype="multipart/form-data">
+<form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="panel panel-default panel-center">
         <div class="panel-heading">
@@ -18,7 +18,7 @@
             <div class="form-group">
                 <label class="control-label col-md-3" for="name">Description</label>
                 <div class="col-md-9">
-                    <textarea class="form-control" id="name" maxlength="100" name="name" placeholder="Name" title="" type="text"></textarea>
+                    <textarea class="form-control" id="description" maxlength="300" name="description" placeholder="Short description of the project" title=""></textarea>
                 </div>
             </div>
         </div>
