@@ -17,4 +17,3 @@ class Project(models.Model):
     def get_path(self):
     	return os.path.join(settings.USER_DATA_DIR, self.user.username, self.name)
 
-
