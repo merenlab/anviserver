@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
+from django.utils.text import slugify
 from django.http import JsonResponse, HttpResponse, Http404
 from .models import Project
 from sendfile import sendfile
@@ -56,7 +57,8 @@ def delete_project(request):
 @login_required
 def new_project(request):
     if request.method == "POST":
-        project = Project(name=request.POST['name'], user=request.user)
+        name = slugify(request.POST['name']).replace('-', '_')
+        project = Project(name=name, user=request.user)
 
         project_path = project.get_path()
         try:
