@@ -1,20 +1,18 @@
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
-from django.conf import settings
 from django.http import JsonResponse, HttpResponse, Http404
 from .models import Project
 from sendfile import sendfile
 import argparse
+import shutil
 import os
 
 
 def check_view_permission(project, user):
-    if project.is_public:
-        return True
-
     if project.user == user:
         return True
 
@@ -36,7 +34,6 @@ def put_project_file(project_path, file_name, content):
         for chunk in content.chunks():
             destination.write(chunk)
 
-
 @login_required
 def index(request):
     return render(request, 'index.html')
@@ -46,14 +43,22 @@ def index(request):
 def list_projects(request):
     return render(request, 'projects.html', {'projects': Project.objects.filter(user=request.user)})
 
+@login_required
+@require_POST
+def delete_project(request):
+    project = get_project(request.user.username, request.POST['name'])
+    if project:
+        shutil.rmtree(project.get_path())
+        project.delete()
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'error'})
 
 @login_required
 def new_project(request):
     if request.method == "POST":
         project = Project(name=request.POST['name'], user=request.user)
 
-        project_path = os.path.join(
-            settings.USER_DATA_DIR, request.user.username, project.name)
+        project_path = project.get_path()
         try:
             os.makedirs(project_path)
         except:
@@ -87,7 +92,7 @@ def ajax_dispatcher(request, username, project_name, requested_url):
     if not check_view_permission(project, request.user):
         raise Http404
 
-    project_path = os.path.join(settings.USER_DATA_DIR, username, project_name)
+    project_path = project.get_path()
 
     if requested_url.startswith('data/init'):
         return JsonResponse({

@@ -45,7 +45,7 @@ $(document).ready(function() {
                             throw 'There is no data entry for "' + node.label + '".'
                         }
                         if (layerdata_dict[node.label].length != header_len) {
-                            throw 'Length of line ' + node.label + ' is different than header. ';
+                            throw 'Length of the line ' + node.label + ' is different than the header. ';
                         }
 
                     }

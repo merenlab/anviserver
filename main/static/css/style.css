@@ -31,3 +31,8 @@
 .fileUploadTxt {
 	font-size: 12px;
 }
+
+th {
+	background-color: #eeeeee;
+	text-align: center;
+}

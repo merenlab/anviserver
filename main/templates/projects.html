@@ -1,18 +1,56 @@
-{% extends 'index.html' %}
-{% block title %}My Projects{% endblock %}
-{% block content %}
+{% extends 'index.html' %} {% block title %}My Projects{% endblock %} {% block content %}
 <div class="page-header">
     <h1>My Projects</h1>
 </div>
-  {% for project in projects %}
-          <div class="panel panel-default panel-center">
-          <div class="panel-heading">
-            <h3 class="panel-title"><a href="{% url 'project' project.user.username project.name %}">{{ project.name }}</a><span class="label label-warning">Public</span></h3>
-          </div>
-          <div class="panel-body">
-          	Created: {{ project.created_at }}
-          </div>
-        </div>
-  {% endfor %}
-  <a href="{% url 'new_project' %}"><button class="btn btn-primary">New Project</button></a>
+{% if projects %}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th class="col-md-6">Name</th>
+            <th class="col-md-3">Created</th>
+            <th class="col-md-3">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td>{{ project.name }}</td>
+            <td>{{ project.created_at }}</td>
+            <td>
+                <a href="{% url 'project' project.user.username project.name %}">
+                    <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View</button>
+                </a>
+                <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Edit</button>
+                <button type="button" class="btn btn-danger btn-xs" onclick="deleteProject('{{ project.name }}');"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-info">
+  <strong>Oh No!</strong> You do not have any projects.
+</div>
+{% endif %}
+<br />
+<a href="{% url 'new_project' %}">
+    <button class="btn btn-primary">New Project</button>
+</a>
+<script>
+function deleteProject(name) {
+    if (!confirm("Do you really want to delete '" + name + "'?"))
+      return;
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_delete' %}",
+        data: {'name': name, 'csrfmiddlewaretoken': $("{% csrf_token %}").val() },
+        success: function(result) {
+          if (result['status'] == 'ok') {
+            window.location = window.location; // refresh
+          }
+        }
+    });
+}
+</script>
 {% endblock %}
