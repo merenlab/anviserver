@@ -29,7 +29,7 @@
 </table>
 {% else %}
 <div class="alert alert-info">
-  <strong>Oh No!</strong> You do not have any projects.
+    <strong>Oh No!</strong> You do not have any projects.
 </div>
 {% endif %}
 <br />
@@ -39,16 +39,19 @@
 <script>
 function deleteProject(name) {
     if (!confirm("Do you really want to delete '" + name + "'?"))
-      return;
+        return;
 
     $.ajax({
         type: "POST",
         url: "{% url 'projects_delete' %}",
-        data: {'name': name, 'csrfmiddlewaretoken': $("{% csrf_token %}").val() },
+        data: {
+            'name': name,
+            'csrfmiddlewaretoken': $("{% csrf_token %}").val()
+        },
         success: function(result) {
-          if (result['status'] == 'ok') {
-            window.location = window.location; // refresh
-          }
+            if (result['status'] == 'ok') {
+                window.location = window.location; // refresh
+            }
         }
     });
 }

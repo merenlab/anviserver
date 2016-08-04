@@ -36,3 +36,18 @@ th {
 	background-color: #eeeeee;
 	text-align: center;
 }
+
+.navbar-brand {
+	margin: 0px;
+	padding: 0px 0px 0px 20px;
+}
+
+.navbar-default .navbar-brand {
+    color: #000;
+    font-size: 22px;
+}
+
+.navbar-brand img {
+	display: inline-block;
+	margin-right: 5px;
+}

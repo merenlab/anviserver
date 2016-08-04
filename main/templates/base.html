@@ -1,3 +1,4 @@
+{% load gravatar %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,13 +22,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="{% url 'index' %}">Anvio Server</a>
+                    <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'img/logo-white.png' %}" width="60px" />Anvi'o Server</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img src="http://www.endeavourspeakers.co.uk/media/sm_blank_profile.png" />{{ user }} <span class="caret"></span></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img src="{{ user.email|gravatar }}" />{{ user }} <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="{% url 'auth_password_change' %}">Change Password</a></li>
                                     <li><a href="{% url 'auth_logout' %}">Logout</a></li>
