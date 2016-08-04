@@ -1,53 +1,61 @@
-.navbar {
-    background-image: url("../img/fractal.jpg");
-    background-repeat: repeat;
-    border-bottom: 1px solid lightgray;
-    padding-top: 16px;
-    height: 80px;
-}
-
 .dropdown img {
-	width: 32px;
-	height: 32px;
-	margin: 0px 6px;
-	display: inline-block;
-	border-radius: 50%;
-}
-
-.help-block {
-	display: none;
+    width: 32px;
+    height: 32px;
+    margin: 0px 6px;
+    display: inline-block;
+    border-radius: 50%;
 }
 
 .content {
-	padding-top: 50px;
-}
-
-.label {
-	margin-left: 5px;
-	vertical-align: middle;
-	font-size: 9px;
+    padding-top: 50px;
 }
 
 .fileUploadTxt {
-	font-size: 12px;
+    font-size: 12px;
 }
 
 th {
-	background-color: #eeeeee;
-	text-align: center;
-}
-
-.navbar-brand {
-	margin: 0px;
-	padding: 0px 0px 0px 20px;
-}
-
-.navbar-default .navbar-brand {
-    color: #000;
-    font-size: 22px;
+    
+    text-align: center;
 }
 
 .navbar-brand img {
-	display: inline-block;
-	margin-right: 5px;
+    display: inline-block;
+    margin-right: 5px;
+    width: 40px;
+    height: 40px;
+    margin-left: 20px;
+}
+
+.td-center {
+    text-align: center;
+}
+
+.form-horizontal .control-label {
+    padding-top: 4px;
+}
+
+
+/* Sticky footer styles
+-------------------------------------------------- */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+	padding-top: 30px;
+    position: absolute;
+    text-align: center;
+    font-size: 12px;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
 }

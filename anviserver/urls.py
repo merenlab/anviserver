@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.conf import settings
-from django.views.static import serve
 from main.views import index, list_projects, new_project, ajax_dispatcher, show_project, delete_project
+from registration.forms import RegistrationFormUniqueEmail
+from registration.backends.default.views import RegistrationView
 
 urlpatterns = [
     url(r'^admin/'          , admin.site.urls),
+
+    url(r'^accounts/register/$'      , RegistrationView.as_view(form_class=RegistrationFormUniqueEmail), name='registration_register'),
     url(r'^accounts/'       , include('registration.backends.default.urls')),
 
     url(r'^projects/new'    , new_project     , name="projects_new"),
@@ -31,5 +33,6 @@ urlpatterns = [
     url(r'^project/(?P<username>\w+)/(?P<project_name>\w+)/', show_project, name="project"),
 
     url(r'^ajax/(?P<username>\w+)/(?P<project_name>\w+)/(?P<requested_url>.*)', ajax_dispatcher),
+    
     url(r'^$', index, name='index'),
 ]

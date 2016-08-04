@@ -42,7 +42,7 @@ def index(request):
 
 @login_required
 def list_projects(request):
-    return render(request, 'projects.html', {'projects': Project.objects.filter(user=request.user)})
+    return render(request, 'projects_list.html', {'projects': Project.objects.filter(user=request.user)})
 
 @login_required
 @require_POST
@@ -58,7 +58,7 @@ def delete_project(request):
 def new_project(request):
     if request.method == "POST":
         name = slugify(request.POST['name']).replace('-', '_')
-        project = Project(name=name, user=request.user)
+        project = Project(name=name, user=request.user, desc=request.POST['desc'])
 
         project_path = project.get_path()
         try:
@@ -66,17 +66,15 @@ def new_project(request):
         except:
             pass
 
-        if 'treeFile' in request.FILES:
-            put_project_file(project_path, 'treeFile',
-                             request.FILES['treeFile'])
+        fileTypes = ['treeFile', 'dataFile', 'fastaFile', 'samplesOrderFile', 'samplesInfoFile']
 
-        if 'dataFile' in request.FILES:
-            put_project_file(project_path, 'dataFile',
-                             request.FILES['dataFile'])
+        for fileType in fileTypes:
+            if fileType in request.FILES:
+                put_project_file(project_path, fileType, request.FILES[fileType])
 
         project.save()
 
-    return render(request, 'new_project.html')
+    return render(request, 'projects_new.html')
 
 
 @login_required

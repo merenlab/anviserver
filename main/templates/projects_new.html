@@ -1,0 +1,110 @@
+{% extends 'index.html' %} {% block title %}New Project{% endblock %} {% block content %}
+<div class="page-header">
+    <h2>New Project</h2>
+</div>
+<form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
+    {% csrf_token %}
+    <fieldset>
+        <div class="well">
+            <legend>Project Details</legend>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Name (*)</label>
+                <div class="col-md-9">
+                    <input class="form-control" id="name" maxlength="100" name="name" placeholder="Name" required="required" title="" type="text" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Description</label>
+                <div class="col-md-9">
+                    <textarea class="form-control" id="desc" maxlength="300" name="desc" placeholder="Short description of the project" title=""></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="well">
+            <legend>Essential Files</legend>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Tree (*)</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary btn-sm">
+                            Browse&hellip; <input type="file" style="display: none;" id="treeFile" name="treeFile"/>
+                        </span>
+                        </label>
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtTreeFile" readonly value="Newick-formatted tree file." />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Data</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary btn-sm">
+                            Browse&hellip; <input type="file" style="display: none;" id="dataFile" name="dataFile" /></span>
+                        </label>
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtDataFile" readonly value="TAB-Delimited data file." />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">FASTA</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary btn-sm">
+                                Browse&hellip; <input type="file" style="display: none;" id="fastaFile" name="fastaFile" /></span>
+                        </label>
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtFastaFile" readonly value="FASTA File. " />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="well">
+            <legend>Additional Files</legend>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Samples Order</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary btn-sm">
+                                Browse&hellip; <input type="file" style="display: none;" id="samplesOrderFile" name="samplesOrderFile" /></span>
+                        </label>
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtSamplesOrderFile" readonly value="TAB-Delimited samples order file." />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Samples Info</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary btn-sm">
+                                Browse&hellip; <input type="file" style="display: none;" id="samplesInfoFile" name="samplesInfoFile" /></span>
+                        </label>
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtSamplesInfoFile" readonly value="TAB-Delimited samples information file." />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <input type="submit" value="Create project" class="btn btn-primary" />
+</form>
+<div id="modalUploading" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">
+    <div class="modal-dialog modal-m">
+        <div class="modal-content">
+            <div class="modal-header"></div>
+            <div class="modal-body">
+                <div class="progress progress-striped active" style="margin-bottom:0;">
+                    <div class="progress-bar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block header %} {% load staticfiles %}
+<script src="{% static 'js/jquery.form.js' %}"></script>
+<script src="{% static 'js/newick_parser.js' %}"></script>
+<script src="{% static 'js/papaparse.min.js' %}"></script>
+<script src="{% static 'js/new_project.js' %}"></script>
+{% endblock %}
