@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^admin/'          , admin.site.urls),
     url(r'^accounts/'       , include('registration.backends.default.urls')),
 
-    url(r'^projects/new'    , new_project     , name="new_project"),
+    url(r'^projects/new'    , new_project     , name="projects_new"),
     url(r'^projects/delete' , delete_project  , name="projects_delete"),
     url(r'^projects/'       , list_projects   , name="projects"),
 

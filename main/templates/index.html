@@ -1,18 +1,42 @@
 {% extends 'base.html' %} {% block body %}
-<div class="container">
-    <div id="content" class="row">
-        <div class="sidebar col-sm-3 col-md-3">
-            <div class="list-group table-of-contents">
-                <a href="/" class="list-group-item">Welcome</a>
-                <a href="{% url 'projects' %}" class="list-group-item">My Projects</a>
-                <a href="#" class="list-group-item">Shared with me</a>
-                <a href="#" class="list-group-item">Help</a>
-                <a href="#" class="list-group-item">Contact us</a>
+    <div class="container">
+        <div id="content" class="row">
+            <div class="sidebar col-sm-3 col-md-3">
+                <div class="list-group table-of-contents">
+                    {% with request.resolver_match.url_name as url_name %}
+                    <a href="/" class="list-group-item {% if url_name == 'index' %}active{% endif %}">Welcome</a>
+                    <a href="{% url 'projects' %}" class="list-group-item {% if 'projects' in url_name %}active{% endif %}">My Projects</a>
+                    <a href="#" class="list-group-item">Shared with me</a>
+                    <a href="#" class="list-group-item">Help</a>
+                    <a href="#" class="list-group-item">Contact us</a>
+                {% endwith %}
             </div>
         </div>
         <div class="main col-sm-8 col-md-8">
             {% block content %}
-                <h1>Welcome to Anvio Server!</h1>
+                <div class="page-header">
+                    <h1>Welcome to Anvi'o Server!</h1>
+                </div>
+                <div class="main col-sm-6 col-md-6">
+                    <div class="panel panel-default panel-center">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Latest News</h3>
+                        </div>
+                        <div class="panel-body">
+                            Lorem ipsum
+                        </div>
+                    </div>
+                </div>
+                <div class="main col-sm-6 col-md-6">
+                    <div class="panel panel-default panel-center">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Featured Projects</h3>
+                        </div>
+                        <div class="panel-body">
+                            Lorem ipsum
+                        </div>
+                    </div>
+                </div>
             {% endblock %}
         </div>
     </div>
