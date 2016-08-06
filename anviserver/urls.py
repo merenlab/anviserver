@@ -11,14 +11,15 @@ urlpatterns = [
     url(r'^accounts/register/$', RegistrationView.as_view(form_class=RegistrationFormUniqueEmail), name='registration_register'),
     url(r'^accounts/'          , include('registration.backends.default.urls')),
 
-    url(r'^projects/new'                         , projects.new_project     , name="projects_new"),
-    url(r'^projects/delete'                      , projects.delete_project  , name="projects_delete"),
-    url(r'^projects/edit/(?P<project_name>\w+)/' , projects.edit_project    , name="projects_edit"),
-    url(r'^projects/shared'                      , projects.list_shared     , name="shared"),
-    url(r'^projects/'                            , projects.list_projects   , name="projects"),
+    url(r'^projects/new'                          , projects.new_project     , name="projects_new"),
+    url(r'^projects/delete'                       , projects.delete_project  , name="projects_delete"),
+    url(r'^projects/edit/(?P<project_name>\w+)/'  , projects.edit_project    , name="projects_edit"),
+    url(r'^projects/share/(?P<project_name>\w+)/' , projects.share_project   , name="projects_share"),
+    url(r'^projects/shared'                       , projects.list_shared     , name="shared"),
+    url(r'^projects/'                             , projects.list_projects   , name="projects"),
 
     url(r'^project/(?P<username>\w+)/(?P<project_name>\w+)/'                    , interactive.show_interactive, name="show_interactive"),
-    url(r'^ajax/(?P<username>\w+)/(?P<project_name>\w+)/(?P<requested_url>.*)'  , interactive.ajax_handler),
+    url(r'^ajax/(?P<username>\w+)/(?P<project_name>\w+)/(?P<view_key>\w+)/(?P<requested_url>.*)'  , interactive.ajax_handler),
     
     url(r'^$', index.show_index, name='index'),
 ]

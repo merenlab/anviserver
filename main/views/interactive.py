@@ -7,19 +7,21 @@ from main.utils import get_project, check_view_permission
 from sendfile import sendfile
 import os
 
-@login_required
 def show_interactive(request, username, project_name):
     project = get_project(username, project_name)
-    if not check_view_permission(project, request.user):
+
+    view_key = request.GET.get('view_key')
+    if view_key is None:
+        view_key = "no_view_key"
+
+    if not check_view_permission(project, request.user, view_key):
         raise Http404
 
-    return render(request, 'interactive.html', {'project': project})
+    return render(request, 'interactive.html', {'project': project, 'view_key': view_key})
 
-
-@login_required
-def ajax_handler(request, username, project_name, requested_url):
+def ajax_handler(request, username, project_name, view_key, requested_url):
     project = get_project(username, project_name)
-    if not check_view_permission(project, request.user):
+    if not check_view_permission(project, request.user, view_key):
         raise Http404
 
     project_path = project.get_path()

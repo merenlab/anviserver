@@ -1,6 +1,6 @@
-{% extends 'index.html' %} {% block title %}{{ project.name }}{% endblock %} {% block content %}
+{% extends 'index.html' %} {% block title %}Edit {{ project.name }}{% endblock %} {% block content %}
 <div class="page-header">
-    <h2>{{ project.name }}</h2>
+    <h2>Edit "{{ project.name }}"</h2>
 </div>
 <div class="well">
     <legend>Project files</legend>
@@ -22,13 +22,8 @@
         </table>
 </div>
 <div class="well">
-    <legend>Sharing</legend>
-        <div class="col-md-4">
-            Public
-        </div>
-        <div class="col-md-8">
-            No
-        </div>
+    <legend>Replace Files</legend>
+    TO DO
 
 </div>
 {% endblock %} {% block header %} {% load staticfiles %}

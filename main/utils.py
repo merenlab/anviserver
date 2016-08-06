@@ -2,7 +2,10 @@ from main.models import Project
 
 import os
 
-def check_view_permission(project, user):
+def check_view_permission(project, user, view_key):
+    if project.view_key == view_key:
+        return True
+
     if project.user == user:
         return True
 

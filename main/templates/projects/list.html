@@ -3,45 +3,58 @@
     <h2>{{ page_title }}</h2>
 </div>
 {% if projects %}
-<table class="table table-hover">
-    <thead>
-        <tr>
-            {% if read_only %}<th class="col-md-2">Owner</th>{% endif %}
-            <th class="col-md-4">Name</th>
-            <th class="col-md-3">Created at</th>
-            <th class="col-md-3 td-center">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for project in projects %}
-        <tr>
-            {% if read_only %}<td>{{ project.user.username }}</td>{% endif %}
-            <td>{{ project.name }}</td>
-            <td>{{ project.created_at }}</td>
-            <td class="td-center">
-                <a href="{% url 'show_interactive' project.user.username project.name %}" class="btn btn-info btn-xs">
-                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View
-                </a>
-                {% if not read_only %}
-                <a href="{% url 'projects_edit' project.name %}" class="btn btn-info btn-xs">
-                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Edit
-                </a>
-                <a href="#" class="btn btn-danger btn-xs" onclick="deleteProject('{{ project.name }}');">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-                </a>
+<div class="well">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                {% if read_only %}
+                <th class="col-md-2">Owner</th>
+                <th class="col-md-4">Name</th>
+                <th class="col-md-3">Created at</th>
+                <th class="col-md-3 td-center">Actions</th>
+                {% else %}
+                <th class="col-md-5">Name</th>
+                <th class="col-md-3">Created at</th>
+                <th class="col-md-4 td-center">Actions</th>
                 {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<div class="alert alert-info">
-    You do not have any projects.
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+            <tr>
+                {% if read_only %}
+                <td>{{ project.user.username }}</td>{% endif %}
+                <td>{{ project.name }}</td>
+                <td>{{ project.created_at }}</td>
+                <td class="td-center">
+                    <div class="btn-group">
+                        <a href="{% url 'show_interactive' project.user.username project.name %}" class="btn btn-primary btn-xs">
+                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View
+                        </a>
+                        {% if not read_only %}
+                        <a href="{% url 'projects_edit' project.name %}" class="btn btn-primary btn-xs">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Edit
+                        </a>
+                        <a href="{% url 'projects_share' project.name %}" class="btn btn-primary btn-xs">
+                            <span class="glyphicon glyphicon-share" aria-hidden="true"></span> Share
+                        </a>
+                        <a href="#" class="btn btn-danger btn-xs" onclick="deleteProject('{{ project.name }}');">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                        </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">
+        There is no project to show here.
+    </div>
+    {% endif %}
 </div>
-{% endif %}
-<br /> 
-{% if not read_only %}
+<br /> {% if not read_only %}
 <a href="{% url 'projects_new' %}">
     <button class="btn btn-primary">New Project</button>
 </a>

@@ -1,0 +1,63 @@
+{% extends 'index.html' %} {% block title %}Share {{ project.name }}{% endblock %} {% block content %}
+<div class="page-header">
+    <h2>Share "{{ project.name }}"</h2>
+</div>
+<div class="col-md-12">
+    <div class="well">
+        <form class="form-horizontal" action="#" onsubmit="return false;">
+            <legend>Basic Sharing</legend>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Public Sharing Link</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm" id="public_link" value="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ project.view_key }}" readonly="readonly">
+                        <span class="input-group-btn">
+                <button class="btn btn-primary btn-sm" type="button" onclick="generate_view_key()">
+                    <span class="glyphicon glyphicon-refresh"></span> Refresh Link
+                        </button>
+                        <button class="btn btn-primary btn-sm" type="button" data-clipboard-target="#public_link">
+                            <span class="glyphicon glyphicon-copy"></span> Copy
+                        </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="well">
+        <form class="form-horizontal" action="#" onsubmit="return false;">
+            <legend>Shared people</legend>
+        </form>
+    </div>
+</div>
+<legend>Share with Team</legend>
+<div class="form-group">
+    <label class="control-label col-md-3" for="name">Public Sharing Link</label>
+    <div class="col-md-9">
+        <input class="form-control" id="name" maxlength="100" name="link" placeholder="" title="" type="text" />
+    </div>
+</div>
+<script>
+new Clipboard('.btn');
+
+function generate_view_key() {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'generate_view_key',
+            'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
+        },
+        success: function(result) {
+            if (result['status'] == 'ok') {
+                $('#public_link').val("{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key=" + result['view_key'])
+            }
+        }
+    });
+}
+</script>
+{% endblock %} {% block header %} {% load staticfiles %}
+<script src="{% static 'js/clipboard.min.js' %}"></script>
+{% endblock %}
