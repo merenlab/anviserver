@@ -16,7 +16,7 @@ import os
 def list_projects(request):
     context = {
         'projects': Project.objects.filter(user=request.user),
-        'read_only': False,
+        'shared_with_me': False,
         'page_title': 'My Projects'
     }
     return render(request, 'projects/list.html', context)
@@ -26,7 +26,7 @@ def list_projects(request):
 def list_shared(request):
     context = {
         'projects': Project.objects.filter(user=request.user),
-        'read_only': True,
+        'shared_with_me': True,
         'page_title': 'Shared with me'
     }
     return render(request, 'projects/list.html', context)
