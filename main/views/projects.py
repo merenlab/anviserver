@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from main.models import Project, ProjectUser
+from main.models import Project, ProjectUser, Team, TeamUser
 from main.utils import get_project, put_project_file
 
 import shutil
@@ -85,7 +85,7 @@ def share_project(request, project_name):
     context = {
         'project': project,
         'shared_emails': ProjectUser.objects.filter(project=project),
-        'teams': Teams.objects.filter(user=request.user),
+        'teams': Team.objects.filter(teamuser__user__id=request.user.id)
     }
     return render(request, 'projects/share.html', context)
 

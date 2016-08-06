@@ -21,7 +21,7 @@ class Team(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class TeamUser(models.Model):
-    team = models.ForeignKey(Project, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class ProjectUser(models.Model):

@@ -12,8 +12,8 @@
                     <div class="input-group">
                         <input type="text" class="form-control input-sm" id="public_link" value="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ project.view_key }}" readonly="readonly">
                         <span class="input-group-btn">
-                <button class="btn btn-primary btn-sm" type="button" onclick="generate_view_key()">
-                    <span class="glyphicon glyphicon-refresh"></span> Refresh Link
+                            <button class="btn btn-primary btn-sm" type="button" onclick="generate_view_key()">
+                            <span class="glyphicon glyphicon-refresh"></span> Refresh Link
                         </button>
                         <button class="btn btn-primary btn-sm" type="button" data-clipboard-target="#public_link">
                             <span class="glyphicon glyphicon-copy"></span> Copy
@@ -28,7 +28,8 @@
 <div class="col-md-6">
     <div class="well">
         <form class="form-horizontal" action="#" onsubmit="return false;">
-            <legend>Shared people</legend>
+            <legend>Share with people</legend>
+            {% if shared_emails %}
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -38,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for shared_email in shared_emails %}
+                    {% for shared_email in shared_emails %}
                     <tr>
                         <td><small>{{ shared_email.email }}</small></td>
                         <td>
@@ -53,11 +54,16 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <div class="alert alert-info">
+                <small>You did not shared this project with any person.</small>
+            </div>
+            {% endif %}
         </form>
         <div class="input-group">
             <input type="text" class="form-control input-sm" id="email" placeholder="Enter e-mail adress">
             <span class="input-group-btn">
-                <button class="btn btn-primary btn-sm" type="button" onclick="share_with_email()">
+                    <button class="btn btn-primary btn-sm" type="button" onclick="share_with_email()">
                     <span class="glyphicon glyphicon-share"></span> Share
             </button>
             </span>
@@ -67,7 +73,23 @@
 <div class="col-md-6">
     <div class="well">
         <form class="form-horizontal" action="#" onsubmit="return false;">
-            <legend>Shared teams</legend>
+            <legend>Share with your teams</legend>
+            <div class="alert alert-info">
+                <small>You did not shared this project with any team.</small>
+            </div>
+            <div class="input-group">
+                <select class="form-control input-sm">
+                    <option selected disabled>Select a team</option>
+                    {% for team in teams %}
+                    <option value="{{ team.id }}">{{ team.name }}</option>
+                    {% endfor %}
+                </select>
+                <span class="input-group-btn">
+                        <button class="btn btn-primary btn-sm" type="button" onclick="share_with_email()">
+                        <span class="glyphicon glyphicon-share"></span> Share
+                </button>
+                </span>
+            </div>
         </form>
     </div>
 </div>
@@ -104,8 +126,7 @@ function share_with_email() {
             'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
         },
         success: function(result) {
-            if(result['status'] == 'ok')
-            {
+            if (result['status'] == 'ok') {
                 location.reload();
             }
         }
@@ -122,8 +143,7 @@ function delete_email(email) {
             'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
         },
         success: function(result) {
-            if(result['status'] == 'ok')
-            {
+            if (result['status'] == 'ok') {
                 location.reload();
             }
         }
