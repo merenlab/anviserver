@@ -29,6 +29,9 @@ class ProjectUser(models.Model):
     email = models.CharField(max_length=250, default="")
     can_write = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.project.user.username + ' - ' + self.project.name + ' - ' + self.email + ' - Write:' + str(self.can_write)
+
 class ProjectTeam(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)

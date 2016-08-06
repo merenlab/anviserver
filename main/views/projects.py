@@ -25,7 +25,7 @@ def list_projects(request):
 @login_required
 def list_shared(request):
     context = {
-        'projects': Project.objects.filter(user=request.user),
+        'projects': Project.objects.filter(projectuser__email__iexact=request.user.email).distinct(),
         'shared_with_me': True,
         'page_title': 'Shared with me'
     }
@@ -60,8 +60,32 @@ def share_project(request, project_name):
             }
             return JsonResponse(context)
 
+        if request.POST.get('action') == 'share_with_email':
+            email = request.POST.get('email') 
+            already_shared = ProjectUser.objects.filter(project=project, email__iexact=email)
+            if already_shared or not email:
+                context = {'status': 'error'}
+            else:
+                ProjectUser(project=project, email=email).save()
+                context = {'status': 'ok'}            
+            return JsonResponse(context)
+
+            
+        if request.POST.get('action') == 'delete_email':
+            email = request.POST.get('email') 
+            sharing = ProjectUser.objects.filter(project=project, email__iexact=email)
+            if sharing:
+                context = {'status': 'ok'}
+                sharing.delete()
+            else:
+                context = {'status': 'error'}            
+            return JsonResponse(context)
+
+
     context = {
         'project': project,
+        'shared_emails': ProjectUser.objects.filter(project=project),
+        'teams': Teams.objects.filter(user=request.user),
     }
     return render(request, 'projects/share.html', context)
 

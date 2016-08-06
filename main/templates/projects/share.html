@@ -29,18 +29,54 @@
     <div class="well">
         <form class="form-horizontal" action="#" onsubmit="return false;">
             <legend>Shared people</legend>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="col-md-10">E-mail</th>
+                        <th class="col-md-1">Edits</th>
+                        <th class="col-md-1">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for shared_email in shared_emails %}
+                    <tr>
+                        <td><small>{{ shared_email.email }}</small></td>
+                        <td>
+                            <input type="checkbox" {% if shared_email.can_write %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" data-offstyle="danger">
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-danger btn-xs" onclick="delete_email('{{ shared_email.email }}');">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </form>
+        <div class="input-group">
+            <input type="text" class="form-control input-sm" id="email" placeholder="Enter e-mail adress">
+            <span class="input-group-btn">
+                <button class="btn btn-primary btn-sm" type="button" onclick="share_with_email()">
+                    <span class="glyphicon glyphicon-share"></span> Share
+            </button>
+            </span>
+        </div>
     </div>
 </div>
-<legend>Share with Team</legend>
-<div class="form-group">
-    <label class="control-label col-md-3" for="name">Public Sharing Link</label>
-    <div class="col-md-9">
-        <input class="form-control" id="name" maxlength="100" name="link" placeholder="" title="" type="text" />
+<div class="col-md-6">
+    <div class="well">
+        <form class="form-horizontal" action="#" onsubmit="return false;">
+            <legend>Shared teams</legend>
+        </form>
     </div>
 </div>
 <script>
 new Clipboard('.btn');
+$('input:checkbox').bootstrapToggle({
+    on: 'Yes',
+    off: 'No'
+});
 
 function generate_view_key() {
     $.ajax({
@@ -53,6 +89,42 @@ function generate_view_key() {
         success: function(result) {
             if (result['status'] == 'ok') {
                 $('#public_link').val("{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key=" + result['view_key'])
+            }
+        }
+    });
+}
+
+function share_with_email() {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'share_with_email',
+            'email': $('#email').val(),
+            'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
+        },
+        success: function(result) {
+            if(result['status'] == 'ok')
+            {
+                location.reload();
+            }
+        }
+    });
+}
+
+function delete_email(email) {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'delete_email',
+            'email': email,
+            'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
+        },
+        success: function(result) {
+            if(result['status'] == 'ok')
+            {
+                location.reload();
             }
         }
     });
