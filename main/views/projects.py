@@ -46,9 +46,11 @@ def edit_project(request, project_name):
     }
     return render(request, 'projects/edit.html', context)
 
+
 @login_required
 def share_project(request, project_name):
     project = get_project(request.user.username, project_name)
+    template = 'projects/share.html'
 
     if request.method == "POST":
         if request.POST.get('action') == 'generate_view_key':
@@ -61,33 +63,26 @@ def share_project(request, project_name):
             return JsonResponse(context)
 
         if request.POST.get('action') == 'share_with_email':
-            email = request.POST.get('email') 
+            template = '_partial/_shared_email_list.html'
+            email = request.POST.get('email').strip()
             already_shared = ProjectUser.objects.filter(project=project, email__iexact=email)
-            if already_shared or not email:
-                context = {'status': 'error'}
-            else:
+            if not already_shared and email:
                 ProjectUser(project=project, email=email).save()
-                context = {'status': 'ok'}            
-            return JsonResponse(context)
 
-            
         if request.POST.get('action') == 'delete_email':
-            email = request.POST.get('email') 
+            template = '_partial/_shared_email_list.html'
+            email = request.POST.get('email')
             sharing = ProjectUser.objects.filter(project=project, email__iexact=email)
             if sharing:
                 context = {'status': 'ok'}
                 sharing.delete()
-            else:
-                context = {'status': 'error'}            
-            return JsonResponse(context)
-
 
     context = {
         'project': project,
         'shared_emails': ProjectUser.objects.filter(project=project),
         'teams': Team.objects.filter(teamuser__user__id=request.user.id)
     }
-    return render(request, 'projects/share.html', context)
+    return render(request, template, context)
 
 
 @login_required
@@ -107,8 +102,8 @@ def delete_project(request):
 def new_project(request):
     if request.method == "POST":
         name = slugify(request.POST['name']).replace('-', '_')
-        project = Project(name=name, 
-                          user=request.user, 
+        project = Project(name=name,
+                          user=request.user,
                           desc=request.POST['desc'],
                           view_key=get_random_string(length=16))
 

@@ -25,40 +25,13 @@
         </form>
     </div>
 </div>
-<div class="col-md-6">
+<div class="col-md-6" id="shared_with_email">
     <div class="well">
         <form class="form-horizontal" action="#" onsubmit="return false;">
             <legend>Share with people</legend>
-            {% if shared_emails %}
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th class="col-md-10">E-mail</th>
-                        <th class="col-md-1">Edits</th>
-                        <th class="col-md-1">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for shared_email in shared_emails %}
-                    <tr>
-                        <td><small>{{ shared_email.email }}</small></td>
-                        <td>
-                            <input type="checkbox" {% if shared_email.can_write %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" data-offstyle="danger">
-                        </td>
-                        <td>
-                            <a href="#" class="btn btn-danger btn-xs" onclick="delete_email('{{ shared_email.email }}');">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="alert alert-info">
-                <small>You did not shared this project with any person.</small>
+            <div id="share_with_email_container">
+            {% include '_partial/_shared_email_list.html' %}
             </div>
-            {% endif %}
         </form>
         <div class="input-group">
             <input type="text" class="form-control input-sm" id="email" placeholder="Enter e-mail adress">
@@ -125,10 +98,8 @@ function share_with_email() {
             'email': $('#email').val(),
             'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
         },
-        success: function(result) {
-            if (result['status'] == 'ok') {
-                location.reload();
-            }
+        success: function(partial) {
+            $('#share_with_email_container').html(partial);
         }
     });
 }
@@ -142,10 +113,8 @@ function delete_email(email) {
             'email': email,
             'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
         },
-        success: function(result) {
-            if (result['status'] == 'ok') {
-                location.reload();
-            }
+        success: function(partial) {
+            $('#share_with_email_container').html(partial);
         }
     });
 }
