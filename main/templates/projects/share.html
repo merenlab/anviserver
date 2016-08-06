@@ -1,6 +1,6 @@
 {% extends 'index.html' %} {% block title %}Share {{ project.name }}{% endblock %} {% block content %}
 <div class="page-header">
-    <h2>Share "{{ project.name }}"</h2>
+    <h3><a href="{% url 'projects' %}">My Projects</a> <span>&raquo;</span> Share "{{ project.name }}"</h3>
 </div>
 <div class="col-md-12">
     <div class="well">

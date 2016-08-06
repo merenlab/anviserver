@@ -1,6 +1,6 @@
 {% extends 'index.html' %} {% block title %}New Project{% endblock %} {% block content %}
 <div class="page-header">
-    <h2>New Project</h2>
+    <h3><a href="{% url 'projects' %}">My Projects</a> &raquo; New Project</h3>
 </div>
 <form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
     {% csrf_token %}

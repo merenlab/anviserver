@@ -6,6 +6,14 @@
     border-radius: 50%;
 }
 
+.page-header h3 a {
+    color: #2d2d2d;
+}
+
+.page-header h3 a:hover {
+    text-decoration: none;
+}
+
 .content {
     padding-top: 50px;
 }
@@ -13,7 +21,6 @@
 .fileUploadTxt {
     font-size: 12px;
 }
-
 
 .well {
 	background-color: rgb(252,252,252);
