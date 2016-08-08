@@ -7,10 +7,10 @@
         <form class="form-horizontal" action="#" onsubmit="return false;">
             <legend>Basic Sharing</legend>
             <div class="form-group">
-                <label class="control-label col-md-3" for="name">Public Sharing Link</label>
+                <label class="control-label col-md-3" for="name">Private Sharing Link</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <input type="text" class="form-control input-sm" id="public_link" value="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ project.view_key }}" readonly="readonly">
+                        <input type="text" class="form-control input-sm" id="private_link" value="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ project.view_key }}" readonly="readonly">
                         <span class="input-group-btn">
                             <button class="btn btn-primary btn-sm" type="button" onclick="generate_view_key()">
                             <span class="glyphicon glyphicon-refresh"></span> Refresh Link
@@ -27,38 +27,38 @@
 </div>
 <div class="col-md-6" id="shared_with_email">
     <div class="well">
-        <form class="form-horizontal" action="#" onsubmit="return false;">
+        <form class="form-horizontal" action="#" onsubmit="share_with_email(); return false;">
             <legend>Share with people</legend>
-            <div id="share_with_email_container">
-            {% include '_partial/_shared_email_list.html' %}
+            <div id="shared_email_list_container">
+                {% include '_partial/_shared_email_list.html' %}
+            </div>
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" id="email" placeholder="Enter e-mail adress">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary btn-sm" type="submit">
+                    <span class="glyphicon glyphicon-share"></span> Share
+                </button>
+                </span>
             </div>
         </form>
-        <div class="input-group">
-            <input type="text" class="form-control input-sm" id="email" placeholder="Enter e-mail adress">
-            <span class="input-group-btn">
-                    <button class="btn btn-primary btn-sm" type="button" onclick="share_with_email()">
-                    <span class="glyphicon glyphicon-share"></span> Share
-            </button>
-            </span>
-        </div>
     </div>
 </div>
 <div class="col-md-6">
     <div class="well">
-        <form class="form-horizontal" action="#" onsubmit="return false;">
+        <form class="form-horizontal" action="#" onsubmit="share_with_team(); return false;">
             <legend>Share with your teams</legend>
-            <div class="alert alert-info">
-                <small>You did not shared this project with any team.</small>
+            <div id="shared_team_list_container">
+                {% include '_partial/_shared_team_list.html' %}
             </div>
             <div class="input-group">
-                <select class="form-control input-sm">
+                <select class="form-control input-sm" id="team_id">
                     <option selected disabled>Select a team</option>
                     {% for team in teams %}
                     <option value="{{ team.id }}">{{ team.name }}</option>
                     {% endfor %}
                 </select>
                 <span class="input-group-btn">
-                        <button class="btn btn-primary btn-sm" type="button" onclick="share_with_email()">
+                        <button class="btn btn-primary btn-sm" type="submit">
                         <span class="glyphicon glyphicon-share"></span> Share
                 </button>
                 </span>
@@ -67,10 +67,18 @@
     </div>
 </div>
 <script>
+function initalizePlugins() {
+    $('input:checkbox').bootstrapToggle({
+        on: 'Yes',
+        off: 'No'
+    });
+}
+
 new Clipboard('.btn');
-$('input:checkbox').bootstrapToggle({
-    on: 'Yes',
-    off: 'No'
+initalizePlugins();
+
+$(document).ajaxComplete(function() {
+    initalizePlugins();
 });
 
 function generate_view_key() {
@@ -83,7 +91,7 @@ function generate_view_key() {
         },
         success: function(result) {
             if (result['status'] == 'ok') {
-                $('#public_link').val("{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key=" + result['view_key'])
+                $('#private_link').val("{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key=" + result['view_key'])
             }
         }
     });
@@ -96,10 +104,26 @@ function share_with_email() {
         data: {
             'action': 'share_with_email',
             'email': $('#email').val(),
-            'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
+            'csrfmiddlewaretoken': '{{csrf_token}}',
         },
         success: function(partial) {
-            $('#share_with_email_container').html(partial);
+            $('#shared_email_list_container').html(partial);
+            $('#email').val('');
+        }
+    });
+}
+
+function share_with_team() {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'share_with_team',
+            'team_id': $('#team_id').val(),
+            'csrfmiddlewaretoken': '{{csrf_token}}',
+        },
+        success: function(partial) {
+            $('#shared_team_list_container').html(partial);
         }
     });
 }
@@ -111,10 +135,25 @@ function delete_email(email) {
         data: {
             'action': 'delete_email',
             'email': email,
-            'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
+            'csrfmiddlewaretoken': '{{csrf_token}}',
         },
         success: function(partial) {
-            $('#share_with_email_container').html(partial);
+            $('#shared_email_list_container').html(partial);
+        }
+    });
+}
+
+function delete_team(id) {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'delete_team',
+            'team_id': id,
+            'csrfmiddlewaretoken': '{{csrf_token}}',
+        },
+        success: function(partial) {
+            $('#shared_team_list_container').html(partial);
         }
     });
 }
