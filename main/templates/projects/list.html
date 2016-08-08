@@ -2,57 +2,9 @@
 <div class="page-header">
     <h3>{{ page_title }}</h3>
 </div>
-{% if projects %}
-<div class="well">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                {% if shared_with_me %}
-                <th class="col-md-2">Owner</th>
-                <th class="col-md-4">Name</th>
-                <th class="col-md-3">Created at</th>
-                <th class="col-md-3 td-center">Actions</th>
-                {% else %}
-                <th class="col-md-5">Name</th>
-                <th class="col-md-3">Created at</th>
-                <th class="col-md-4 td-center">Actions</th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for project in projects %}
-            <tr>
-                {% if shared_with_me %}
-                <td>{{ project.user.username }}</td>{% endif %}
-                <td>{{ project.name }}</td>
-                <td>{{ project.created_at }}</td>
-                <td class="td-center">
-                    <div class="btn-group">
-                        <a href="{% url 'show_interactive' project.user.username project.name %}" class="btn btn-primary btn-xs">
-                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View
-                        </a>
-                        {% if not shared_with_me %}
-                        <a href="{% url 'projects_edit' project.name %}" class="btn btn-primary btn-xs">
-                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Edit
-                        </a>
-                        <a href="{% url 'projects_share' project.name %}" class="btn btn-primary btn-xs">
-                            <span class="glyphicon glyphicon-share" aria-hidden="true"></span> Share
-                        </a>
-                        <a href="#" class="btn btn-danger btn-xs" onclick="deleteProject('{{ project.name }}');">
-                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-                        </a>
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class="alert alert-info">
-        There is no project to show here.
-    </div>
-    {% endif %}
+<div id="list_projects">
+    {% include '_partial/_list_projects.html' %}
+</div>
 </div>
 <br /> {% if not shared_with_me %}
 <a href="{% url 'projects_new' %}">
@@ -65,15 +17,14 @@ function deleteProject(name) {
         return;
     $.ajax({
         type: "POST",
-        url: "{% url 'projects_delete' %}",
+        url: "{% url 'projects' %}",
         data: {
             'name': name,
-            'csrfmiddlewaretoken': $("{% csrf_token %}").val()
+            'action': 'delete',
+            'csrfmiddlewaretoken': '{{csrf_token}}'
         },
-        success: function(result) {
-            if (result['status'] == 'ok') {
-                location.reload();
-            }
+        success: function(partial) {
+            $('#list_projects').html(partial);
         }
     });
 }
