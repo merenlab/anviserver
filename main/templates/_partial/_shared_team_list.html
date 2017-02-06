@@ -12,7 +12,7 @@
         <tr>
             <td><small>{{ shared_team.team.name }}</small></td>
             <td>
-                <input type="checkbox" {% if shared_team.can_write %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" data-offstyle="danger">
+                <input type="checkbox" {% if shared_team.can_write %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" onChange="set_team_write_permission('{{ shared_team.team.id }}', $(this).prop('checked'));" data-offstyle="danger">
             </td>
             <td>
                 <a href="#" class="btn btn-danger btn-xs" onclick="delete_team('{{ shared_team.team.id }}');">

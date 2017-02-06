@@ -1,10 +1,9 @@
 {% extends 'index.html' %} {% block title %}{{ page_title }}{% endblock %} {% block content %}
 <div class="page-header">
-    <h3>{{ page_title }}</h3>
+<big>{{ page_title }}</big>
 </div>
 <div id="list_projects">
     {% include '_partial/_list_projects.html' %}
-</div>
 </div>
 <br /> {% if not shared_with_me %}
 <a href="{% url 'projects_new' %}">

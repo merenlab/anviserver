@@ -1,49 +1,10 @@
 .dropdown img {
-    width: 32px;
-    height: 32px;
-    margin: 0px 6px;
     display: inline-block;
     border-radius: 50%;
-}
-
-.page-header h3 a {
-    color: #2d2d2d;
-}
-
-.page-header h3 a:hover {
-    text-decoration: none;
-}
-
-.content {
-    padding-top: 50px;
-}
-
-.fileUploadTxt {
-    font-size: 12px;
-}
-
-.well {
-	background-color: rgb(252,252,252);
-    border: 1px solid rgba(227, 227, 227, 0.5);
-    border-radius: 8px;
-    box-shadow: none;
-}
-
-.navbar-brand img {
-    display: inline-block;
+    width: 32px;
     margin-right: 5px;
-    width: 40px;
-    height: 40px;
-    margin-left: 20px;
 }
 
-.td-center {
-    text-align: center;
-}
-
-.form-horizontal .control-label {
-    padding-top: 4px;
-}
 
 
 /* Sticky footer styles

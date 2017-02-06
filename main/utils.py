@@ -1,4 +1,6 @@
 from main.models import Project
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 import os
 
@@ -18,10 +20,8 @@ def check_write_permission(project, user):
 
     return False
 
-
 def get_project(username, project_name):
-    return Project.objects.get(user__username=username, name=project_name)
-
+    return get_object_or_404(Project, user__username=username, name=project_name)
 
 def put_project_file(project_path, file_name, content):
     with open(os.path.join(project_path, file_name), 'wb+') as destination:

@@ -12,7 +12,7 @@
         <tr>
             <td><small>{{ shared_email.email }}</small></td>
             <td>
-                <input type="checkbox" {% if shared_email.can_write %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" data-offstyle="danger">
+                <input type="checkbox" {% if shared_email.can_write %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" onChange="set_email_write_permission('{{ shared_email.email }}', $(this).prop('checked'));" data-offstyle="danger">
             </td>
             <td>
                 <a href="#" class="btn btn-danger btn-xs" onclick="delete_email('{{ shared_email.email }}');">

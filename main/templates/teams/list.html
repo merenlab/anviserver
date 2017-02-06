@@ -1,0 +1,55 @@
+{% extends 'index.html' %} {% block title %}Teams{% endblock %} {% block content %}
+<div class="page-header">
+    <h3>Teams</h3>
+</div>
+<div id="list_teams">
+    {% include '_partial/_list_teams.html' %}
+</div>
+<br />
+<div class="well">
+    <form class="form-horizontal" action="#" onsubmit="create_team(); return false;">
+        <legend>Create a new team</legend>
+        <div class="input-group">
+            <input type="text" class="form-control" id="team_name" placeholder="Name">
+            <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">
+                    <span class="glyphicon glyphicon-ok"></span> Create
+            </button>
+            </span>
+        </div>
+    </form>
+</div>
+<script>
+function create_team() {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'teams' %}",
+        data: {
+            'action': 'create_team',
+            'name': $('#team_name').val(),
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(partial) {
+            $('#list_teams').html(partial);
+            $('#team_name').val('');
+        }
+    });
+}
+
+function delete_team(id) {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'teams' %}",
+        data: {
+            'action': 'delete_team',
+            'id': id,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function(partial) {
+            $('#list_teams').html(partial);
+        }
+    });
+}
+
+</script>
+{% endblock %}

@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
 from django.utils.crypto import get_random_string
 from django.utils.text import slugify
 from django.shortcuts import render
@@ -15,9 +14,10 @@ import os
 @login_required
 def list_projects(request):
     template = 'projects/list.html'
+    action = request.POST.get('action')
 
-    if request.POST.get('action') == 'delete':
-        project = get_project(request.user.username, request.POST['name'])
+    if action == 'delete':
+        project = get_project(request.user.username, request.POST.get('name'))
 
         if project:
             shutil.rmtree(project.get_path())
@@ -60,8 +60,9 @@ def edit_project(request, project_name):
 @login_required
 def share_project(request, project_name):
     project = get_project(request.user.username, project_name)
+    action = request.POST.get('action')
 
-    if request.POST.get('action') == 'generate_view_key':
+    if action == 'generate_view_key':
         project.view_key = get_random_string(length=16)
         project.save()
         context = {
@@ -73,7 +74,7 @@ def share_project(request, project_name):
     shared_emails = ProjectUser.objects.filter(project=project)
     shared_teams = ProjectTeam.objects.filter(project=project)
 
-    if request.POST.get('action') == 'share_with_email':
+    if action == 'share_with_email':
         email = request.POST.get('email').strip()
         already_shared = ProjectUser.objects.filter(project=project, email__iexact=email)
 
@@ -82,16 +83,20 @@ def share_project(request, project_name):
 
         return render(request, '_partial/_shared_email_list.html', {'shared_emails': shared_emails})
 
-    if request.POST.get('action') == 'delete_email':
+    if action == 'delete_email' or action == 'set_email_write_permission':
         email = request.POST.get('email')
-        sharing = ProjectUser.objects.filter(project=project, email__iexact=email)
+        sharing = ProjectUser.objects.get(project=project, email__iexact=email)
 
         if sharing:
-            sharing.delete()
+            if action == 'delete_email':
+                sharing.delete()
+            elif action == 'set_email_write_permission':
+                sharing.can_write = True if request.POST.get('permission') == 'true' else False
+                sharing.save()
 
         return render(request, '_partial/_shared_email_list.html', {'shared_emails': shared_emails})
 
-    if request.POST.get('action') == 'share_with_team':
+    if action == 'share_with_team':
         team_id = request.POST.get('team_id')
 
         if team_id:
@@ -105,17 +110,19 @@ def share_project(request, project_name):
 
         return render(request, '_partial/_shared_team_list.html', {'shared_teams': shared_teams})
 
-    if request.POST.get('action') == 'delete_team':
+    if action == 'delete_team' or action == 'set_team_write_permission':
         team_id = request.POST.get('team_id')
 
         if team_id:
             team = Team.objects.get(id=team_id)
+            sharing = ProjectTeam.objects.get(project=project, team=team)
 
-            is_member = TeamUser.objects.filter(user=request.user, team=team)
-            sharing = ProjectTeam.objects.filter(project=project, team=team)
-
-            if sharing and is_member:
-                sharing.delete()
+            if sharing:
+                if action == 'delete_team':
+                    sharing.delete()
+                elif action == 'set_team_write_permission':
+                    sharing.can_write = True if request.POST.get('permission') == 'true' else False
+                    sharing.save()
 
         return render(request, '_partial/_shared_team_list.html', {'shared_teams': shared_teams})
 
@@ -129,13 +136,14 @@ def share_project(request, project_name):
     }
     return render(request, 'projects/share.html', context)
 
+
 @login_required
 def new_project(request):
     if request.method == "POST":
-        name = slugify(request.POST['name']).replace('-', '_')
+        name = slugify(request.POST.get('name')).replace('-', '_')
         project = Project(name=name,
                           user=request.user,
-                          desc=request.POST['desc'],
+                          desc=request.POST.get('desc'),
                           view_key=get_random_string(length=16))
 
         project_path = project.get_path()

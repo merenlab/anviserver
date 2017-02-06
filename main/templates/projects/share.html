@@ -87,7 +87,7 @@ function generate_view_key() {
         url: "{% url 'projects_share' project.name %}",
         data: {
             'action': 'generate_view_key',
-            'csrfmiddlewaretoken': $("{% csrf_token %}").val(),
+            'csrfmiddlewaretoken': '{{csrf_token}}',
         },
         success: function(result) {
             if (result['status'] == 'ok') {
@@ -157,6 +157,39 @@ function delete_team(id) {
         }
     });
 }
+
+function set_email_write_permission(email, permission) {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'set_email_write_permission',
+            'email': email,
+            'permission': permission,
+            'csrfmiddlewaretoken': '{{csrf_token}}',
+        },
+        success: function(partial) {
+            $('#shared_email_list_container').html(partial);
+        }
+    });
+}
+
+function set_team_write_permission(team_id, permission) {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'set_team_write_permission',
+            'team_id': team_id,
+            'permission': permission,
+            'csrfmiddlewaretoken': '{{csrf_token}}',
+        },
+        success: function(partial) {
+            $('#shared_team_list_container').html(partial);
+        }
+    });
+}
+
 </script>
 {% endblock %} {% block header %} {% load staticfiles %}
 <script src="{% static 'js/clipboard.min.js' %}"></script>

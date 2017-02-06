@@ -1,51 +1,37 @@
 {% if projects %}
-<div class="well">
+
     <table class="table table-hover">
         <thead>
             <tr>
                 {% if shared_with_me %}
-                <th class="col-md-2">Created by</th>
                 <th class="col-md-4">Name</th>
-                <th class="col-md-3">Created at</th>
-                <th class="col-md-3 td-center">Actions</th>
+                <th class="col-md-2">Created by</th>
+                <th class="col-md-3">Last Modified</th>
+                <th class="col-md-3 td-center">Shared With</th>
                 {% else %}
                 <th class="col-md-5">Name</th>
-                <th class="col-md-3">Created at</th>
-                <th class="col-md-4 td-center">Actions</th>
+                <th class="col-md-3">Last Modified</th>
+                <th class="col-md-4 td-center">Shared With</th>
                 {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for project in projects %}
             <tr>
+                <td>{{ project.name }}</td>
                 {% if shared_with_me %}
                 <td>{{ project.user.username }}</td>{% endif %}
-                <td>{{ project.name }}</td>
-                <td>{{ project.created_at }}</td>
-                <td class="td-center">
-                    <div class="btn-group">
-                        <a href="{% url 'show_interactive' project.user.username project.name %}" class="btn btn-primary btn-xs">
-                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View
-                        </a>
-                        {% if not shared_with_me %}
-                        <a href="{% url 'projects_edit' project.name %}" class="btn btn-primary btn-xs">
-                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Edit
-                        </a>
-                        <a href="{% url 'projects_share' project.name %}" class="btn btn-primary btn-xs">
-                            <span class="glyphicon glyphicon-share" aria-hidden="true"></span> Share
-                        </a>
-                        <a href="#" class="btn btn-danger btn-xs" onclick="deleteProject('{{ project.name }}');">
-                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-                        </a>
-                        {% endif %}
-                    </div>
+                <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
+                <td>
+                    --
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-    <div class="alert alert-info">
-        There is no project to show here.
-    </div>
-    {% endif %}
+
+{% else %}
+<div class="alert alert-info">
+    There is no project to show here.
+</div>
+{% endif %}

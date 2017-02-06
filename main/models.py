@@ -1,8 +1,12 @@
 from django.contrib.auth.models import Permission, User
 from django.db import models
 from django.conf import settings
+
+import random
 import os
 
+def generate_random_pk():
+    return random.SystemRandom().getrandbits(32)
 
 class Project(models.Model):
     user = models.ForeignKey(User, default=1)
@@ -19,6 +23,7 @@ class Project(models.Model):
 
 
 class Team(models.Model):
+    id = models.IntegerField(unique=True, primary_key=True, default=generate_random_pk, editable=False)
     name = models.CharField(max_length=100)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 

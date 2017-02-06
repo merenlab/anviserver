@@ -10,7 +10,7 @@ $(document).ready(function() {
                 tree = new Tree();
                 tree.Parse(contents);
                 if (tree.error) {
-                    $('#txtTreeFile').val('"' + file.name + ' is not a valid newick tree.');
+                    $('#txtTreeFile').val('"' + file.name + '" is not a valid newick tree.');
                     $('#txtTreeFile').css('background-color', '#f2dede');
                 } else {
                     $('#txtTreeFile').val('"' + file.name + '" loaded. It contains ' + tree.num_leaves + ' leaves. ');

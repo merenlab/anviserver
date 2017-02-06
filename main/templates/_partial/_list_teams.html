@@ -1,0 +1,40 @@
+{% if teams %}
+<div class="well">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th class="col-md-3">Name</th>
+                <th class="col-md-2 td-center">Created by</th>
+                <th class="col-md-2 td-center">Shared</th>
+                <th class="col-md-2 td-center">Members</th>
+                <th class="col-md-3 td-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams %}
+            <tr>
+                <td>{{ team.name }}</td>
+                <td class="td-center">{{ team.owner }}</td>
+                <td class="td-center"><b>{{ team.projectteam_set.all|length }}</b> projects</td>
+                <td class="td-center"><b>{{ team.teamuser_set.all|length }}</b> users</td>
+                <td class="td-center">
+                    {% if team.owner.id == request.user.id %} 
+                    <a href="#" class="btn btn-danger btn-xs" onclick="delete_team({{ team.id }});">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                    </a>           
+                    {% else %}
+                    <a href="#" class="btn btn-warning btn-xs" onclick="deleteProject('');">
+                        <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Leave
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    You are not a member of any team.
+</div>
+{% endif %}
