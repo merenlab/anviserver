@@ -11,12 +11,11 @@
         <tbody>
             {% for project in projects %}
             <tr>
-                <td>{{ project.name }}</td>
-                {% if shared_with_me %}
-                <td>{{ project.user.username }}</td>{% endif %}
+                <td><a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a></td>
                 <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
                 <td>
-                    --
+                    <a href="{% url 'projects_share' project.name %}"><button type="button" class="btn btn-default btn-sm">Share</button></a>
+                    <a href="{% url 'projects_edit' project.name %}"><button type="button" class="btn btn-default btn-sm">Edit</button></a>
                 </td>
             </tr>
             {% endfor %}
