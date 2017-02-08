@@ -38,14 +38,6 @@ class TeamUser(models.Model):
     def __unicode__(self):
         return str(self.user) + ' member of ' + str(self.team)
 
-class ProjectUser(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    email = models.CharField(max_length=250, default="")
-    can_write = models.BooleanField(default=False)
-
-    def __unicode__(self):
-        return str(self.project) + ' shared with ' + str(self.email)
-
 class ProjectTeam(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)

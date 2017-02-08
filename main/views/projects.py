@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from main.models import Project, ProjectUser, Team, TeamUser, ProjectTeam
+from main.models import Project, Team, TeamUser, ProjectTeam
 from main.utils import get_project, put_project_file
 
 import shutil
@@ -26,21 +26,9 @@ def list_projects(request):
 
     context = {
         'projects': Project.objects.filter(user=request.user),
-        'shared_with_me': False,
         'page_title': 'My Projects'
     }
     return render(request, template, context)
-
-
-@login_required
-def list_shared(request):
-    context = {
-        'projects': Project.objects.filter(projectuser__email__iexact=request.user.email).distinct(),
-        'shared_with_me': True,
-        'page_title': 'Shared with me'
-    }
-    return render(request, 'projects/list.html', context)
-
 
 @login_required
 def edit_project(request, project_name):
@@ -71,30 +59,7 @@ def share_project(request, project_name):
         }
         return JsonResponse(context)
 
-    shared_emails = ProjectUser.objects.filter(project=project)
     shared_teams = ProjectTeam.objects.filter(project=project)
-
-    if action == 'share_with_email':
-        email = request.POST.get('email').strip()
-        already_shared = ProjectUser.objects.filter(project=project, email__iexact=email)
-
-        if not already_shared and email:
-            ProjectUser(project=project, email=email).save()
-
-        return render(request, '_partial/_shared_email_list.html', {'shared_emails': shared_emails})
-
-    if action == 'delete_email' or action == 'set_email_write_permission':
-        email = request.POST.get('email')
-        sharing = ProjectUser.objects.get(project=project, email__iexact=email)
-
-        if sharing:
-            if action == 'delete_email':
-                sharing.delete()
-            elif action == 'set_email_write_permission':
-                sharing.can_write = True if request.POST.get('permission') == 'true' else False
-                sharing.save()
-
-        return render(request, '_partial/_shared_email_list.html', {'shared_emails': shared_emails})
 
     if action == 'share_with_team':
         team_id = request.POST.get('team_id')
@@ -130,7 +95,6 @@ def share_project(request, project_name):
 
     context = {
         'project': project,
-        'shared_emails': shared_emails,
         'shared_teams': shared_teams,
         'teams': teams
     }

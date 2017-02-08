@@ -15,7 +15,7 @@
                             <button class="btn btn-primary btn-sm" type="button" onclick="generate_view_key()">
                             <span class="glyphicon glyphicon-refresh"></span> Refresh Link
                         </button>
-                        <button class="btn btn-primary btn-sm" type="button" data-clipboard-target="#public_link">
+                        <button class="btn btn-primary btn-sm" type="button" data-clipboard-target="#private_link">
                             <span class="glyphicon glyphicon-copy"></span> Copy
                         </button>
                         </span>
@@ -25,25 +25,7 @@
         </form>
     </div>
 </div>
-<div class="col-md-6" id="shared_with_email">
-    <div class="well">
-        <form class="form-horizontal" action="#" onsubmit="share_with_email(); return false;">
-            <legend>Share with people</legend>
-            <div id="shared_email_list_container">
-                {% include '_partial/_shared_email_list.html' %}
-            </div>
-            <div class="input-group">
-                <input type="text" class="form-control input-sm" id="email" placeholder="Enter e-mail adress">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary btn-sm" type="submit">
-                    <span class="glyphicon glyphicon-share"></span> Share
-                </button>
-                </span>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="col-md-6">
+<div class="col-md-12">
     <div class="well">
         <form class="form-horizontal" action="#" onsubmit="share_with_team(); return false;">
             <legend>Share with your teams</legend>
@@ -97,22 +79,6 @@ function generate_view_key() {
     });
 }
 
-function share_with_email() {
-    $.ajax({
-        type: "POST",
-        url: "{% url 'projects_share' project.name %}",
-        data: {
-            'action': 'share_with_email',
-            'email': $('#email').val(),
-            'csrfmiddlewaretoken': '{{csrf_token}}',
-        },
-        success: function(partial) {
-            $('#shared_email_list_container').html(partial);
-            $('#email').val('');
-        }
-    });
-}
-
 function share_with_team() {
     $.ajax({
         type: "POST",
@@ -128,21 +94,6 @@ function share_with_team() {
     });
 }
 
-function delete_email(email) {
-    $.ajax({
-        type: "POST",
-        url: "{% url 'projects_share' project.name %}",
-        data: {
-            'action': 'delete_email',
-            'email': email,
-            'csrfmiddlewaretoken': '{{csrf_token}}',
-        },
-        success: function(partial) {
-            $('#shared_email_list_container').html(partial);
-        }
-    });
-}
-
 function delete_team(id) {
     $.ajax({
         type: "POST",
@@ -154,22 +105,6 @@ function delete_team(id) {
         },
         success: function(partial) {
             $('#shared_team_list_container').html(partial);
-        }
-    });
-}
-
-function set_email_write_permission(email, permission) {
-    $.ajax({
-        type: "POST",
-        url: "{% url 'projects_share' project.name %}",
-        data: {
-            'action': 'set_email_write_permission',
-            'email': email,
-            'permission': permission,
-            'csrfmiddlewaretoken': '{{csrf_token}}',
-        },
-        success: function(partial) {
-            $('#shared_email_list_container').html(partial);
         }
     });
 }

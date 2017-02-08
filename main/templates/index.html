@@ -6,7 +6,6 @@
                     {% with request.resolver_match.url_name as url_name %}
                     <a href="/" class="list-group-item {% if url_name == 'index' %}active{% endif %}">Welcome</a>
                     <a href="{% url 'projects' %}" class="list-group-item {% if 'projects' in url_name %}active{% endif %}">My Projects</a>
-                    <a href="{% url 'shared' %}" class="list-group-item {% if 'shared' in url_name %}active{% endif %}">Shared with me</a>
                     <a href="{% url 'teams' %}" class="list-group-item {% if 'teams' in url_name %}active{% endif %}">Teams <span class="badge">{{ request.user.teamuser_set.all|length }}</span></a>
                     <a href="#" class="list-group-item">Settings</a>
                     <a href="#" class="list-group-item">Help</a>
