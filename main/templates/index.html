@@ -1,20 +1,9 @@
 {% extends 'base.html' %} {% block body %}
+{% load profile_link %}
     <div class="container">
         <div id="content" class="row">
-            <div class="sidebar col-sm-3 col-md-3">
-                <div class="list-group table-of-contents">
-                    {% with request.resolver_match.url_name as url_name %}
-                    <a href="/" class="list-group-item {% if url_name == 'index' %}active{% endif %}">Welcome</a>
-                    <a href="{% url 'projects' %}" class="list-group-item {% if 'projects' in url_name %}active{% endif %}">My Projects</a>
-                    <a href="{% url 'teams' %}" class="list-group-item {% if 'teams' in url_name %}active{% endif %}">Teams <span class="badge">{{ request.user.teamuser_set.all|length }}</span></a>
-                    <a href="#" class="list-group-item">Settings</a>
-                    <a href="#" class="list-group-item">Help</a>
-                    <a href="#" class="list-group-item">Contact us</a>
-                {% endwith %}
-            </div>
-        </div>
-        <div class="main col-sm-9 col-md-9">
-            {% block content %}
+            <div class="main col-sm-12 col-md-12">
+                {% block content %}
                 <div class="page-header">
                     <h2>Welcome to Anvi'o Server!</h2>
                 </div>
@@ -24,7 +13,43 @@
                             <h3 class="panel-title">Latest News</h3>
                         </div>
                         <div class="panel-body">
-                            Lorem ipsum
+                            {% for feeditem in feeditems %}
+                                <span class="feeditem">
+                                {% if feeditem.teamuser %}
+                                    {% if feeditem.teamuser.team.owner == feeditem.teamuser.user %}
+                                        You created 
+                                    {% else %}
+                                        {% profile_link feeditem.teamuser.team.owner request.user %}
+                                        added
+                                        {% profile_link feeditem.teamuser.user request.user False %}
+                                        to 
+                                    {% endif %}
+                                    <a href="{% url 'teams_members' feeditem.teamuser.team.id feeditem.teamuser.team.name %}">
+                                        {{ feeditem.teamuser.team.name }}
+                                    </a>
+                                {% elif feeditem.projectteam %}
+                                    {% profile_link feeditem.projectteam.project.user request.user %}
+                                    shared 
+                                    <a href="{% url 'show_interactive' feeditem.projectteam.project.user.username feeditem.projectteam.project.name %}">
+                                        {{ feeditem.projectteam.project.name }}
+                                    </a>
+                                    with
+                                    <a href="{% url 'teams_projects' feeditem.projectteam.team.id feeditem.projectteam.team.name %}">
+                                        {{ feeditem.projectteam.team.name }}
+                                    </a>
+                                {% endif %}
+                                <small>
+                                    <time class="timeago" datetime='{{ feeditem.created_at|date:"c" }}'></time>
+                                </small>
+                                {% if not forloop.last %}
+                                    <hr class="separator">
+                                {% endif %}
+                                </span>
+                            {% empty %}
+                                <div class="alert alert-info">
+                                    No recent activity to display
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -34,7 +59,9 @@
                             <h3 class="panel-title">Featured Projects</h3>
                         </div>
                         <div class="panel-body">
-                            Lorem ipsum
+                            <div class="alert alert-info">
+                                No recent featured projects to display
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -7,17 +7,52 @@
         <form class="form-horizontal" action="#" onsubmit="return false;">
             <legend>Basic Sharing</legend>
             <div class="form-group">
-                <label class="control-label col-md-3" for="name">Private Sharing Link</label>
+                <label class="control-label col-md-3" for="name">Make project public</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        <input type="text" class="form-control input-sm" id="private_link" value="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ project.view_key }}" readonly="readonly">
+                         <input type="checkbox" {% if project.is_public %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" onChange="set_public('{{ project.name }}', $(this).prop('checked'));" data-offstyle="danger">
+                         <div class="alert alert-info alert-small" role="alert">Public projects will be listed on your public profile and can be viewed for everyone.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Private sharing links</label>
+                <div class="col-md-9">
+                    {% with project.projectlink_set.all as links %}
+                    {% if links %}
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-md-8">Link</th>
+                                <th class="col-md-3">Created at</th>
+                                <th class="col-md-1">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for link in project.projectlink_set.all %}
+                            <tr>
+                                <td>
+                                    <small><a href="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ link.link }}">{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ link.link }}</a></small>
+                                </td>
+                                <td>
+                                     <small><time class="timeago" datetime='{{ link.created_at|date:"c" }}'>{{ link.created_at }}</time><small>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-danger btn-xs" onclick="delete_link('{{ link.link }}');">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        <div class="alert alert-info alert-small" role="alert">You have not generated any private sharing link.</div>
+                    {% endif %}
+                    {% endwith %}
+                    <div class="input-group">
                         <span class="input-group-btn">
-                            <button class="btn btn-primary btn-sm" type="button" onclick="generate_view_key()">
-                            <span class="glyphicon glyphicon-refresh"></span> Refresh Link
-                        </button>
-                        <button class="btn btn-primary btn-sm" type="button" data-clipboard-target="#private_link">
-                            <span class="glyphicon glyphicon-copy"></span> Copy
-                        </button>
+                            <button class="btn btn-primary btn-sm" type="button" onclick="generate_link()"><span class="glyphicon glyphicon-refresh"></span> Generate new link</button>
                         </span>
                     </div>
                 </div>
@@ -30,7 +65,36 @@
         <form class="form-horizontal" action="#" onsubmit="share_with_team(); return false;">
             <legend>Share with your teams</legend>
             <div id="shared_team_list_container">
-                {% include '_partial/_shared_team_list.html' %}
+                 {% if shared_teams %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="col-md-8">Team</th>
+                            <th class="col-md-2">Edits</th>
+                            <th class="col-md-2">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shared_team in shared_teams %}
+                        <tr>
+                            <td>{{ shared_team.team.name }}</td>
+                            <td>
+                                <input type="checkbox" {% if shared_team.can_write %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" onChange="set_team_write_permission('{{ shared_team.team.id }}', $(this).prop('checked'));" data-offstyle="danger">
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-danger btn-xs" onclick="delete_team('{{ shared_team.team.id }}');">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="alert alert-info">
+                    <small>You did not shared this project with any team.</small>
+                </div>
+                {% endif %}
             </div>
             <div class="input-group">
                 <select class="form-control input-sm" id="team_id">
@@ -56,25 +120,39 @@ function initalizePlugins() {
     });
 }
 
-new Clipboard('.btn');
 initalizePlugins();
 
 $(document).ajaxComplete(function() {
     initalizePlugins();
 });
 
-function generate_view_key() {
+function generate_link() {
     $.ajax({
         type: "POST",
         url: "{% url 'projects_share' project.name %}",
         data: {
-            'action': 'generate_view_key',
+            'action': 'generate_link',
             'csrfmiddlewaretoken': '{{csrf_token}}',
         },
         success: function(result) {
             if (result['status'] == 'ok') {
-                $('#private_link').val("{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key=" + result['view_key'])
+                location.reload();
             }
+        }
+    });
+}
+
+function delete_link(link) {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'delete_link',
+            'link': link,
+            'csrfmiddlewaretoken': '{{csrf_token}}',
+        },
+        success: function() {
+            location.reload();
         }
     });
 }
@@ -88,8 +166,8 @@ function share_with_team() {
             'team_id': $('#team_id').val(),
             'csrfmiddlewaretoken': '{{csrf_token}}',
         },
-        success: function(partial) {
-            $('#shared_team_list_container').html(partial);
+        success: function() {
+            location.reload();
         }
     });
 }
@@ -103,8 +181,8 @@ function delete_team(id) {
             'team_id': id,
             'csrfmiddlewaretoken': '{{csrf_token}}',
         },
-        success: function(partial) {
-            $('#shared_team_list_container').html(partial);
+        success: function() {
+            location.reload();
         }
     });
 }
@@ -119,13 +197,24 @@ function set_team_write_permission(team_id, permission) {
             'permission': permission,
             'csrfmiddlewaretoken': '{{csrf_token}}',
         },
-        success: function(partial) {
-            $('#shared_team_list_container').html(partial);
+        success: function() {
+            location.reload();
+        }
+    });
+}
+
+function set_public(project_name, permission) {
+    $.ajax({
+        type: "POST",
+        url: "{% url 'projects_share' project.name %}",
+        data: {
+            'action': 'set_public',
+            'permission': permission,
+            'csrfmiddlewaretoken': '{{csrf_token}}',
         }
     });
 }
 
 </script>
-{% endblock %} {% block header %} {% load staticfiles %}
-<script src="{% static 'js/clipboard.min.js' %}"></script>
+{% endblock %} {% block header %}
 {% endblock %}

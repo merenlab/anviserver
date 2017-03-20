@@ -1,10 +1,74 @@
-.dropdown img {
+.gravatar {
     display: inline-block;
     border-radius: 50%;
     width: 32px;
     margin-right: 5px;
 }
 
+.gravatar-square {
+    display: inline-block;
+    width: 32px;
+    margin-right: 5px;
+}
+
+.navbar-brand {
+    padding-top: 4px;
+}
+
+.navbar-brand > img {
+    width: 42px;
+    height: 42px;
+}
+
+.nav-profile-picture {
+    padding-top: 10px !important;
+    padding-bottom: 0px !important;
+}
+
+.badge-nav {
+    font-size: 10px;
+    margin-left: 2px;
+    font-weight: normal;
+    background-color: #999999;
+    padding: 3px 5px;
+}
+
+.navbar-form > .input-group {
+    width: 100%;
+}
+
+.alert-small {
+    padding: 5px;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+#loading {
+    display: none;
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+    background-color: #f0f0f0;
+    padding: 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 1px solid #bfbfbf;
+}
+
+#loading img {
+    width: 40px;
+    height: 40px;
+    margin-right: 4px;
+}
+
+hr.separator {
+    border: 0;
+    height: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 10px 0px;
+}
 
 
 /* Sticky footer styles

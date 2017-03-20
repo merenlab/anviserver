@@ -1,14 +1,23 @@
-from main.models import Project
+from main.models import Project, ProjectLink, ProjectTeam, Team
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 import os
 
 def check_view_permission(project, user, view_key):
-    if project.view_key == view_key:
+    if project.is_public:
         return True
 
     if project.user == user:
+        return True
+
+    if ProjectLink.objects.filter(project=project, link=view_key):
+        return True
+
+    project_teams = set(Team.objects.filter(projectteam__project=project).values_list('id', flat=True))
+    user_teams = set(Team.objects.filter(teamuser__user=user).values_list('id', flat=True))
+
+    if len(project_teams & user_teams) > 0:
         return True
 
     return False
@@ -16,6 +25,12 @@ def check_view_permission(project, user, view_key):
 
 def check_write_permission(project, user):
     if project.user == user:
+        return True
+
+    project_teams = set(Team.objects.filter(projectteam__project=project, projectteam__can_write=True).values_list('id', flat=True))
+    user_teams = set(Team.objects.filter(teamuser__user=user).values_list('id', flat=True))
+
+    if len(project_teams & user_teams) > 0:
         return True
 
     return False

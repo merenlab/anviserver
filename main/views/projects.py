@@ -4,31 +4,30 @@ from django.utils.text import slugify
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from main.models import Project, Team, TeamUser, ProjectTeam
+from main.models import Project, Team, TeamUser, ProjectTeam, ProjectLink
+from django.contrib.auth.models import Permission, User
 from main.utils import get_project, put_project_file
 
-import shutil
+from anvio.utils import get_names_order_from_newick_tree
+
 import os
 
 
 @login_required
 def list_projects(request):
-    template = 'projects/list.html'
     action = request.POST.get('action')
 
     if action == 'delete':
         project = get_project(request.user.username, request.POST.get('name'))
 
         if project:
-            shutil.rmtree(project.get_path())
+            project.delete_project_path()
             project.delete()
-            template = '_partial/_list_projects.html'
 
     context = {
         'projects': Project.objects.filter(user=request.user),
-        'page_title': 'My Projects'
     }
-    return render(request, template, context)
+    return render(request, 'projects/list.html', context)
 
 @login_required
 def edit_project(request, project_name):
@@ -50,12 +49,29 @@ def share_project(request, project_name):
     project = get_project(request.user.username, project_name)
     action = request.POST.get('action')
 
-    if action == 'generate_view_key':
-        project.view_key = get_random_string(length=16)
-        project.save()
+    if action == 'generate_link':
+        newlink = ProjectLink(project=project, link=get_random_string(length=16))
+        newlink.save()
         context = {
-            'status': 'ok',
-            'view_key': project.view_key
+            'status': 'ok'
+        }
+        return JsonResponse(context)
+
+    if action == 'delete_link':
+        link = ProjectLink.objects.filter(project=project, link=request.POST.get('link'))
+        if link:
+            link.delete()
+
+        context = {
+            'status': 'ok'
+        }
+        return JsonResponse(context)
+
+    if action == 'set_public':
+        project.is_public = True if request.POST.get('permission') == 'true' else False
+        project.save(update_fields=["is_public"])
+        context = {
+            'status': 'ok'
         }
         return JsonResponse(context)
 
@@ -73,8 +89,6 @@ def share_project(request, project_name):
             if not already_shared and is_member:
                 ProjectTeam(project=project, team=team).save()
 
-        return render(request, '_partial/_shared_team_list.html', {'shared_teams': shared_teams})
-
     if action == 'delete_team' or action == 'set_team_write_permission':
         team_id = request.POST.get('team_id')
 
@@ -89,8 +103,6 @@ def share_project(request, project_name):
                     sharing.can_write = True if request.POST.get('permission') == 'true' else False
                     sharing.save()
 
-        return render(request, '_partial/_shared_team_list.html', {'shared_teams': shared_teams})
-
     teams = Team.objects.filter(teamuser__user=request.user)
 
     context = {
@@ -100,15 +112,12 @@ def share_project(request, project_name):
     }
     return render(request, 'projects/share.html', context)
 
-
-@login_required
 def new_project(request):
     if request.method == "POST":
         name = slugify(request.POST.get('name')).replace('-', '_')
         project = Project(name=name,
                           user=request.user,
-                          desc=request.POST.get('desc'),
-                          view_key=get_random_string(length=16))
+                          secret=get_random_string(length=16))
 
         project_path = project.get_path()
         try:
@@ -122,6 +131,13 @@ def new_project(request):
             if fileType in request.FILES:
                 put_project_file(project_path, fileType, request.FILES[fileType])
 
+        if 'treeFile' in request.FILES:
+            project.num_leaves = len(get_names_order_from_newick_tree(os.path.join(project_path, 'treeFile')))
+
+        if 'dataFile' in request.FILES:
+            project.num_layers = len(open(os.path.join(project_path, 'dataFile')).readline().rstrip().split('\t')) - 1
+
+        project.create_profile_db(request.POST.get('desc'))
         project.save()
 
     return render(request, 'projects/new.html')

@@ -2,6 +2,11 @@
 <div class="page-header">
     <h3><a href="{% url 'projects' %}">My Projects</a> &raquo; New Project</h3>
 </div>
+{% if not user.is_authenticated %}
+<div class="alert alert-warning">
+    You are not logged in, you can still create a project but the project will be public and all write operations will be disabled. To use all functions please <a href="{% url 'registration_register' %}">register</a> or <a href="{% url 'auth_login' %}">login</a>.
+</div>
+{% endif %}
 <form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
     {% csrf_token %}
     <fieldset>
@@ -23,7 +28,7 @@
         <div class="well">
             <legend>Essential Files</legend>
             <div class="form-group">
-                <label class="control-label col-md-3" for="name">Tree (*)</label>
+                <label class="control-label col-md-3" for="name">Order</label>
                 <div class="col-md-9">
                     <div class="input-group">
                         <label class="input-group-btn">
@@ -31,7 +36,7 @@
                             Browse&hellip; <input type="file" style="display: none;" id="treeFile" name="treeFile"/>
                         </span>
                         </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtTreeFile" value="Newick-formatted tree file." />
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtTreeFile" readonly value="Newick-formatted tree file, or comma-seperated file contains order of leaves." />
                     </div>
                 </div>
             </div>
@@ -44,18 +49,6 @@
                             Browse&hellip; <input type="file" style="display: none;" id="dataFile" name="dataFile" /></span>
                         </label>
                         <input type="text" class="form-control fileUploadTxt input-sm" id="txtDataFile" readonly value="TAB-Delimited data file." />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-3" for="name">FASTA</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-primary btn-sm">
-                                Browse&hellip; <input type="file" style="display: none;" id="fastaFile" name="fastaFile" /></span>
-                        </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtFastaFile" readonly value="FASTA File. " />
                     </div>
                 </div>
             </div>
@@ -102,9 +95,14 @@
         </div>
     </div>
 </div>
+<script>
+var simplemde = new SimpleMDE({ element: document.getElementById("desc") });
+</script>
 {% endblock %} {% block header %} {% load staticfiles %}
 <script src="{% static 'js/jquery.form.js' %}"></script>
 <script src="{% static 'js/newick_parser.js' %}"></script>
-<script src="{% static 'js/papaparse.min.js' %}"></script>
+<script src="{% static 'js/papaparse.js' %}"></script>
 <script src="{% static 'js/new_project.js' %}"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 {% endblock %}

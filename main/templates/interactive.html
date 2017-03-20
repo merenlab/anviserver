@@ -1,8 +1,9 @@
+{% load staticfiles %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<title>{{ project.name }} - Anvi Server</title>
+		<title>{{ project.name }} - Anvi'o Server</title>
 		<style>
 			html, body, iframe {
 				margin: 0px;
@@ -12,6 +13,7 @@
 				border: 0px;
 			}
 		</style>
+		<link rel="icon" type="image/png" href="{% static 'img/logo.png' %}"> 
 	</head>
 	<body>
 		<iframe src="/static/interactive/index.html?request_prefix=/ajax/{{project.user.username}}/{{project.name}}/{{ view_key }}"></iframe>

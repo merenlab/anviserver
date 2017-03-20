@@ -1,0 +1,64 @@
+{% extends 'index.html' %} {% block title %}{{ team.name }} projects{% endblock %} {% block content %}
+<div class="page-header">
+    <h3><a href="{% url 'teams' %}">Teams</a> &raquo; "{{ team.name }}" projects</h3>
+</div>
+<div id="list_projects">
+    {% if projectteams %}
+     <div class="well">
+        <table id="project_table" class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="col-md-4">Name</th>
+                    <th class="col-md-1">Layers</th>
+                    <th class="col-md-1">Leaves</th>
+                    <th class="col-md-1">Collections</th>
+                    <th class="col-md-1">States</th>
+                    <th class="col-md-2">Created</th>
+                    <th class="col-md-2">Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for projectteam in projectteams %}
+                {% with project=projectteam.project %}
+                <tr>
+                    <td>
+                        {% if projectteam.can_write %}
+                            <span class="label label-default">Read/Write</span>
+                        {% else %}
+                            <span class="label label-default">Read only</span>
+                        {% endif %}
+                        <a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a>
+
+                    </td>
+                    <td>{{ project.num_layers }}</td>
+                    <td>{{ project.num_leaves }}</td>
+                    <td>{{ project.get_collection_count }}</td>
+                    <td>{{ project.get_states_count }}</td>
+                    <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
+                    <td>{{ project.user.username }}</td>
+                </tr>
+                {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="alert alert-info">
+        There is no project to show here.
+    </div>
+    {% endif %}
+
+</div>
+<script>
+$(document).ready(function() {
+    $('#project_table').DataTable({
+        columnDefs: [{ orderable: false, targets: -1 }],
+    });
+} );
+</script>
+{% endblock %}
+{% block header %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
+{% endblock %}

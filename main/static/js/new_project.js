@@ -1,4 +1,6 @@
 var tree;
+var viewData;
+var header_len;
 
 $(document).ready(function() {
     $('#treeFile').change(function(event) {
@@ -28,28 +30,22 @@ $(document).ready(function() {
             reader.onload = function(e) {
                 try {
                     var contents = e.target.result;
-                    var viewData = Papa.parse(contents, {'delimiter': '\t'})['data'];
-                    var layerdata_dict = {};
-                    var header_len = viewData[0].length;
-                    for (var i=0; i < viewData.length; i++)
-                    {
-                        layerdata_dict[viewData[i][0]] = viewData[i].slice(0);
-                    }
-                    for (var i=0; i < tree.nodes.length; i++)
-                    {
-                        node = tree.nodes[i];
-                        if (!node.IsLeaf()) {
-                            continue;
-                        }
-                        if (!layerdata_dict.hasOwnProperty(node.label)) {
-                            throw 'There is no data entry for "' + node.label + '".'
-                        }
-                        if (layerdata_dict[node.label].length != header_len) {
-                            throw 'Length of the line ' + node.label + ' is different than the header. ';
-                        }
+                    viewData = Papa.parse(contents, {'delimiter': '\t'})['data'];
+                    header_len = viewData[0].length;
 
+                    if (header_len < 2) {
+                        throw 'Data file contains less than two columns.';
                     }
-                    $('#txtDataFile').val('"' + file.name + '" loaded. It contains ' + header_len + ' columns and matches with tree.');
+/*                    if (viewData[0][0] != 'contig') {
+                        throw 'First column of header should "contig", but it is "' + viewData[0][0] + '".';
+                    }*/
+                    for (var i=0; i < viewData.length - 1; i++)
+                    {
+                        if (viewData[i].length != header_len) {
+                            throw 'Line ' + (i+1) + ' has ' + viewData[i].length + ' columns, but header has ' + header_len + " columns";
+                        }
+                    }
+                    $('#txtDataFile').val('"' + file.name + '" loaded. It contains ' + header_len + ' columns.');
                     $('#txtDataFile').css('background-color', '#dff0d8');
                 }
                 catch (e) {

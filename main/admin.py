@@ -1,10 +1,22 @@
 from django.contrib import admin
-from .models import Project, Team, ProjectTeam, TeamUser
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+
+from main.models import Project, Team, ProjectTeam, TeamUser, ProjectLink, UserProfile, FeedItem
 
 admin.site.register(Project)
 admin.site.register(ProjectTeam)
 admin.site.register(Team)
 admin.site.register(TeamUser)
+admin.site.register(ProjectLink)
+admin.site.register(FeedItem)
 
+admin.site.unregister(User)
 
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
 
+class UserProfileAdmin(UserAdmin):
+    inlines = [ UserProfileInline, ]
+
+admin.site.register(User, UserProfileAdmin)
