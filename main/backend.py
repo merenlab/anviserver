@@ -1,4 +1,4 @@
-from main.models import UserProfile, TeamUser, ProjectTeam, FeedItem
+from main.models import UserProfile, TeamUser, ProjectTeam, FeedItem, Project
 from main.forms import UserRegForm
 from registration.signals import user_registered
 from django.db.models.signals import post_save
@@ -24,12 +24,18 @@ def object_created(sender, instance, created, **kwargs):
             feeditem.user = membership.user
             feeditem.teamuser = instance
             feeditem.save()
-    
+
     elif isinstance(instance, ProjectTeam):
         for membership in instance.team.teamuser_set.all():
             feeditem = FeedItem()
             feeditem.user = membership.user
             feeditem.projectteam = instance
             feeditem.save()
+
+    elif isinstance(instance, Project):
+        feeditem = FeedItem()
+        feeditem.user = instance.user
+        feeditem.project = instance
+        feeditem.save()
 
 post_save.connect(object_created)

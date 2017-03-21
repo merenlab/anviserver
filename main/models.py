@@ -142,5 +142,7 @@ class FeedItem(models.Model):
 
     teamuser = models.ForeignKey(TeamUser, on_delete=models.CASCADE, blank=True, null=True)
     projectteam = models.ForeignKey(ProjectTeam, on_delete=models.CASCADE, blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, blank=True, null=True)
+
 
     created_at = models.DateTimeField(auto_now_add=True)

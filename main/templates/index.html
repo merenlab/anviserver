@@ -17,7 +17,7 @@
                                 <span class="feeditem">
                                 {% if feeditem.teamuser %}
                                     {% if feeditem.teamuser.team.owner == feeditem.teamuser.user %}
-                                        You created 
+                                        You created team 
                                     {% else %}
                                         {% profile_link feeditem.teamuser.team.owner request.user %}
                                         added
@@ -36,6 +36,11 @@
                                     with
                                     <a href="{% url 'teams_projects' feeditem.projectteam.team.id feeditem.projectteam.team.name %}">
                                         {{ feeditem.projectteam.team.name }}
+                                    </a>
+                                {% elif feeditem.project %}
+                                    You created project 
+                                    <a href="{% url 'show_interactive' feeditem.project.user.username feeditem.project.name %}">
+                                        {{ feeditem.project.name }}
                                     </a>
                                 {% endif %}
                                 <small>
