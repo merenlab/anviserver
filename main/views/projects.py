@@ -112,6 +112,7 @@ def share_project(request, project_name):
     }
     return render(request, 'projects/share.html', context)
 
+@login_required
 def new_project(request):
     if request.method == "POST":
         name = slugify(request.POST.get('name')).replace('-', '_')
