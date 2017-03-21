@@ -18,13 +18,13 @@
         <table id="project_table" class="table table-hover">
             <thead>
                 <tr>
-                    <th class="col-md-3">Name</th>
+                    <th class="col-md-2">Name</th>
                     <th class="col-md-1">Layers</th>
                     <th class="col-md-1">Leaves</th>
                     <th class="col-md-1">Collections</th>
                     <th class="col-md-1">States</th>
                     <th class="col-md-2">Created</th>
-                    <th class="col-md-4"></th>
+                    <th class="col-md-5"></th>
                 </tr>
             </thead>
             <tbody>
@@ -36,13 +36,16 @@
                     <td>{{ project.get_collection_count }}</td>
                     <td>{{ project.get_states_count }}</td>
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
-                    <td class="td-center">
-                        <button class="btn btn-primary btn-xs" type="submit">
-                            <span class="glyphicon glyphicon-eye-open"></span> Visualize
-                        </button>                    
-                        <button class="btn btn-success btn-xs" type="submit">
-                            <span class="glyphicon glyphicon-download-alt"></span> Download ZIP
-                        </button>
+                    <td class="td-center" style="text-align: center;">
+                        <a href="{% url 'show_interactive' project.user.username project.name %}" class="btn btn-xs btn-primary">
+                            <span class="glyphicon glyphicon-eye-open"></span> View
+                        </a>
+                        <a href="{% url 'download_zip' project.user.username project.name %}" class="btn btn-xs btn-success">
+                             <span class="glyphicon glyphicon-download-alt"></span> Download ZIP
+                        </a>
+                        <a href="{% url 'download_zip' project.user.username project.name %}" class="btn btn-xs btn-success">
+                             <span class="glyphicon glyphicon-download-alt"></span> Description
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
