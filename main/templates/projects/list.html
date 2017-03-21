@@ -8,13 +8,13 @@
         <table id="project_table" class="table table-hover">
             <thead>
                 <tr>
-                    <th class="col-md-4">Name</th>
+                    <th class="col-md-3">Name</th>
                     <th class="col-md-1">Layers</th>
                     <th class="col-md-1">Leaves</th>
                     <th class="col-md-1">Collections</th>
                     <th class="col-md-1">States</th>
                     <th class="col-md-2">Created</th>
-                    <th class="col-md-2 text-center"></th>
+                    <th class="col-md-3 text-center"></th>
                 </tr>
             </thead>
             <tbody>
@@ -27,15 +27,9 @@
                     <td>{{ project.get_states_count }}</td>
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
                     <td class="text-center">
-                        <div class="dropdown">
-                          <button class="btn btn-primary dropdown-toggle btn-xs" type="button" data-toggle="dropdown">Actions
-                          <span class="caret"></span></button>
-                          <ul class="dropdown-menu">
-                            <li><a href="{% url 'projects_share' project.name %}"><span class="glyphicon glyphicon-share"></span> Share</a></li>
-                            <li><a href="{% url 'projects_edit' project.name %}"><span class="glyphicon glyphicon-edit"></span> Edit</a></li>
-                            <li><a href="#" onclick="deleteProject('{{ project.name }}');"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
-                          </ul>
-                        </div> 
+                        <a href="{% url 'projects_share' project.name %}" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-share"></span> Share</a>
+                        <a href="{% url 'projects_edit' project.name %}" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+                        <a href="#" onclick="deleteProject('{{ project.name }}');" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
