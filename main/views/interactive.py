@@ -7,9 +7,10 @@ from main.utils import get_project, check_view_permission, check_write_permissio
 
 from anvio.utils import get_names_order_from_newick_tree
 
+import zipfile
 import json
 import os
-
+import io
 
 def show_interactive(request, username, project_name):
     project = get_project(username, project_name)
@@ -25,7 +26,24 @@ def show_interactive(request, username, project_name):
 
 
 def download_zip(request, username, project_name):
-    pass
+    project = get_project(username, project_name)
+
+    view_key = request.GET.get('view_key')
+    if view_key is None:
+        view_key = "no_view_key"
+
+    if not check_view_permission(project, request.user, view_key):
+        raise Http404
+
+    zip_io = io.BytesIO()
+    with zipfile.ZipFile(zip_io, mode='w', compression=zipfile.ZIP_DEFLATED) as backup_zip:
+        for f in os.listdir(project.get_path()):
+            backup_zip.write(os.path.join(project.get_path(), f), f)
+
+    response = HttpResponse(zip_io.getvalue(), content_type='application/x-zip-compressed')
+    response['Content-Disposition'] = 'attachment; filename=%s' % project.name + ".zip"
+    response['Content-Length'] = zip_io.tell()
+    return response
 
 
 def ajax_handler(request, username, project_name, view_key, requested_url):
