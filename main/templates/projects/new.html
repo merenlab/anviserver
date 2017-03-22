@@ -48,7 +48,19 @@
                             <span class="btn btn-primary btn-sm">
                             Browse&hellip; <input type="file" style="display: none;" id="dataFile" name="dataFile" /></span>
                         </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtDataFile" readonly value="TAB-Delimited data file." />
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtDataFile" readonly value="TAB-Delimited data file, where each row is leaf on tree and each column is data about leaves." />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="name">Fasta</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary btn-sm">
+                            Browse&hellip; <input type="file" style="display: none;" id="fastaFile" name="fastaFile" /></span>
+                        </label>
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtFastaFile" readonly value="Fasta file contains sequence information for each leaf. If you provide fasta you can view sequences and do BLAST search." />
                     </div>
                 </div>
             </div>

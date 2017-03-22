@@ -6,6 +6,7 @@ from django.http import Http404, JsonResponse, HttpResponse
 from main.utils import get_project, check_view_permission, check_write_permission
 
 from anvio.utils import get_names_order_from_newick_tree
+from anvio.fastalib import SequenceSource
 
 import zipfile
 import hashlib
@@ -74,10 +75,18 @@ def ajax_handler(request, username, project_name, view_key, requested_url):
                              "collectionAutoload": None,
                              "noPing": True,
                              "inspectionAvailable": False,
-                             "sequencesAvailable": False})
+                             "sequencesAvailable": os.path.exists(os.path.join(project_path, 'fastaFile'))})
 
     elif requested_url.startswith('tree/'):
-        return HttpResponse(open(os.path.join(project_path, 'treeFile')), content_type='text/plain')
+        if os.path.exists(os.path.join(project_path, 'treeFile')):
+            return HttpResponse(open(os.path.join(project_path, 'treeFile')), content_type='text/plain')
+        else:
+            data = []
+            with open(os.path.join(project_path, 'dataFile'), 'r') as f:
+                for line in f:
+                    data.append(line.replace('\n', '').split('\t')[0])
+
+            return JsonResponse(data[1:], safe=False)
 
     elif requested_url.startswith('data/view/'):
         
@@ -102,6 +111,23 @@ def ajax_handler(request, username, project_name, view_key, requested_url):
     elif requested_url.startswith('data/collection/'):
         return JsonResponse(project.get_collection(requested_url.split('/')[-1]), safe=False)
 
+    elif requested_url.startswith('data/contig/'):
+        if os.path.exists(os.path.join(project_path, 'fastaFile')):
+            fasta = SequenceSource(os.path.join(project_path, 'fastaFile'))
+            split_name = requested_url.split('/')[-1]
+            
+            seq = fasta.get_seq_by_read_id(split_name)
+
+            if seq:
+                data = {
+                    'sequence': seq,
+                    'header': split_name,
+                }
+                return JsonResponse(data, safe=False)
+            else:
+                raise Http404
+        else:
+            raise Http404
     elif requested_url.startswith('store_collection'):
         if not check_write_permission(project, request.user):
             raise Http404
