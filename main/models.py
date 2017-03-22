@@ -16,7 +16,7 @@ class Project(models.Model):
     user = models.ForeignKey(User, default=1)
     name = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
-    secret = models.CharField(max_length=16)
+    secret = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
 
     state_autoload = models.CharField(max_length=100, default='default')
@@ -102,7 +102,7 @@ class Project(models.Model):
 
 class ProjectLink(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    link = models.CharField(max_length=16)
+    link = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Team(models.Model):
@@ -131,8 +131,9 @@ class ProjectTeam(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    institution = models.CharField(max_length=100)
-    orcid = models.CharField(max_length=100)
+    institution = models.CharField(max_length=100, blank=True, null=True)
+    orcid = models.CharField(max_length=100, blank=True, null=True)
+    fullname = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.user.username + "'s profile"

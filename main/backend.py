@@ -8,6 +8,7 @@ def user_created(sender, user, request, **kwargs):
     data = UserProfile(user=user)
     data.institution = form.data["institution"]
     data.orcid = form.data["orcid"]
+    data.fullname = form.data["fullname"]
 
     data.save()
 

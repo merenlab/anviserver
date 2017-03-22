@@ -20,7 +20,7 @@
             <tbody>
                 {% for project in projects %}
                 <tr>
-                    <td><a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a></td>
+                    <td><a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a> {% if project.is_public %}<span class="label label-warning">Public</span>{% endif %}</td>
                     <td>{{ project.num_layers }}</td>
                     <td>{{ project.num_leaves }}</td>
                     <td>{{ project.get_collection_count }}</td>
