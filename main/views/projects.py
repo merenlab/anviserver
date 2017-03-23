@@ -118,7 +118,7 @@ def new_project(request):
         name = slugify(request.POST.get('name')).replace('-', '_')
         project = Project(name=name,
                           user=request.user,
-                          secret=get_random_string(length=16))
+                          secret=get_random_string(length=32))
 
         project_path = project.get_path()
         try:
@@ -126,7 +126,7 @@ def new_project(request):
         except:
             pass
 
-        fileTypes = ['treeFile', 'dataFile', 'fastaFile', 'samplesOrderFile', 'samplesInfoFile']
+        fileTypes = ['treeFile', 'dataFile', 'fastaFile', 'samplesOrderFile', 'samplesInformationFile']
 
         for fileType in fileTypes:
             if fileType in request.FILES:

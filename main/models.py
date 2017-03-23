@@ -29,13 +29,13 @@ class Project(models.Model):
         return 'Project ' + str(self.name) + ' (Created By: ' + str(self.user) + ')'
 
     def get_path(self):
-        return os.path.join(settings.USER_DATA_DIR, self.user.username, self.secret, self.name)
+        return os.path.join(settings.USER_DATA_DIR, self.user.username, self.secret)
 
     def delete_project_path(self):
-        shutil.rmtree(os.path.join(settings.USER_DATA_DIR, self.user.username, self.secret))
+        shutil.rmtree(self.get_path())
 
     def get_profile_path(self):
-        return os.path.join(self.get_path(), 'PROFILE.db')
+        return os.path.join(self.get_path(), 'profile.db')
 
     def get_profile_db(self):
         return ProfileDatabase(self.get_profile_path(), quiet=True)
@@ -59,7 +59,7 @@ class Project(models.Model):
         return TablesForStates(self.get_profile_path()).states
 
     def get_states_count(self):
-        return len(TablesForStates(self.get_profile_path()).states)
+        return len(self.get_states())
 
     def store_state(self, name, content):
         try:
