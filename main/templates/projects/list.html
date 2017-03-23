@@ -53,6 +53,12 @@
 $(document).ready(function() {
     $('#project_table').DataTable({
         columnDefs: [{ orderable: false, targets: -1 }],
+        iDisplayLength: 20,
+        order: [[ 5, "desc" ]]
+    });
+
+    $("#project_table").on('draw.dt', function() {
+        jQuery("time.timeago").timeago();
     });
 } );
 
