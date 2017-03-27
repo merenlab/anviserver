@@ -42,3 +42,16 @@ def put_project_file(project_path, file_name, content):
     with open(os.path.join(project_path, file_name), 'wb+') as destination:
         for chunk in content.chunks():
             destination.write(chunk)
+
+class MockBottleResponse():
+    def set_header(self, key, value):
+        pass
+
+class MockBottleRequest():
+    def __init__(self, django_request=None):
+        #self.forms = Forms()
+        self.forms = {}
+
+        if django_request:
+            for key in django_request.POST:
+                self.forms[key] = django_request.POST[key]
