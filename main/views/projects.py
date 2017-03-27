@@ -162,13 +162,4 @@ def new_project(request):
                     'message': str(e.clear_text()) if 'clear_text' in dir(e) else str(e)
                     })
 
-        # if 'treeFile' in request.FILES:
-        #     project.num_leaves = len(get_names_order_from_newick_tree(os.path.join(project_path, 'treeFile')))
-
-        # if 'dataFile' in request.FILES:
-        #     project.num_layers = len(open(os.path.join(project_path, 'dataFile')).readline().rstrip().split('\t')) - 1
-
-        # project.create_profile_db(request.POST.get('desc'))
-        #project.save()
-
     return render(request, 'projects/new.html')
