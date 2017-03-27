@@ -85,14 +85,17 @@
                     <div class="input-group">
                         <label class="input-group-btn">
                             <span class="btn btn-primary btn-sm">
-                                Browse&hellip; <input type="file" style="display: none;" id="samplesInfoFile" name="samplesInfoFile" /></span>
+                                Browse&hellip; <input type="file" style="display: none;" id="samplesInformationFile" name="samplesInformationFile" /></span>
                         </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtSamplesInfoFile" readonly value="TAB-Delimited samples information file." />
+                        <input type="text" class="form-control fileUploadTxt input-sm" id="txtSamplesInformationFile" readonly value="TAB-Delimited samples information file." />
                     </div>
                 </div>
             </div>
         </div>
     </fieldset>
+    <div class="alert alert-danger" id="error_box" style="display: none;">
+
+    </div>
     <input type="submit" value="Create project" class="btn btn-primary" />
 </form>
 <div id="modalUploading" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">

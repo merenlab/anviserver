@@ -1,4 +1,4 @@
-\var tree;
+var tree;
 var viewData;
 var header_len;
 
@@ -70,12 +70,18 @@ $(document).ready(function() {
         uploadProgress: function(event, position, total, percentComplete) {
             showPercent(percentComplete);
         },
-        success: function() {
+        success: function(data) {
             showPercent('100');
+            if (data['status'] == 0) {
+                window.location.href = '/projects';
+            } else {
+                $('#modalUploading').modal('hide'); 
+                $('#error_box').show();
+                $('#error_box').html(data['message']);
+            }
         },
         complete: function(xhr) {
             showPercent('100');
-            window.location.href = '/projects';
         }
     }); 
 

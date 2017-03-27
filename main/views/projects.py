@@ -6,12 +6,13 @@ from django.http import JsonResponse
 
 from main.models import Project, Team, TeamUser, ProjectTeam, ProjectLink
 from django.contrib.auth.models import Permission, User
+
 from main.utils import get_project, put_project_file
-
 from anvio.utils import get_names_order_from_newick_tree
+from anvio import dbops
 
+import shutil
 import os
-
 
 @login_required
 def list_projects(request):
@@ -115,30 +116,44 @@ def share_project(request, project_name):
 @login_required
 def new_project(request):
     if request.method == "POST":
-        name = slugify(request.POST.get('name')).replace('-', '_')
-        project = Project(name=name,
-                          user=request.user,
-                          secret=get_random_string(length=32))
-
-        project_path = project.get_path()
         try:
-            os.makedirs(project_path)
-        except:
-            pass
+            name = slugify(request.POST.get('name')).replace('-', '_')
+            project = Project(name=name,
+                              user=request.user,
+                              secret=get_random_string(length=32))
 
-        fileTypes = ['treeFile', 'dataFile', 'fastaFile', 'samplesOrderFile', 'samplesInformationFile']
+            project.create_project_path()
 
-        for fileType in fileTypes:
-            if fileType in request.FILES:
-                put_project_file(project_path, fileType, request.FILES[fileType])
+            fileTypes = ['treeFile', 'dataFile', 'fastaFile', 'samplesOrderFile', 'samplesInformationFile']
+            
+            for fileType in fileTypes:
+                if fileType in request.FILES:
+                    put_project_file(project.get_path(), fileType, request.FILES[fileType])
 
-        if 'treeFile' in request.FILES:
-            project.num_leaves = len(get_names_order_from_newick_tree(os.path.join(project_path, 'treeFile')))
+            samples_info = project.get_file_path('samplesOrderFile', default=None)
+            samples_order = project.get_file_path('samplesInformationFile', default=None)
+            
+            if samples_info or samples_order:
+                s = dbops.SamplesInformationDatabase(project.get_file_path('samples.db'), quiet=True)
+                s.create(samples_order, samples_info)
 
-        if 'dataFile' in request.FILES:
-            project.num_layers = len(open(os.path.join(project_path, 'dataFile')).readline().rstrip().split('\t')) - 1
+            interactive = project.get_interactive()
+            project.save()
+            return JsonResponse({'status': 0})
+        except Exception as e:
+            project.delete_project_path()
+            return JsonResponse({
+                    'status': 1,
+                    'message': str(e.clear_text()) if 'clear_text' in dir(e) else str(e)
+                    })
 
-        project.create_profile_db(request.POST.get('desc'))
-        project.save()
+        # if 'treeFile' in request.FILES:
+        #     project.num_leaves = len(get_names_order_from_newick_tree(os.path.join(project_path, 'treeFile')))
+
+        # if 'dataFile' in request.FILES:
+        #     project.num_layers = len(open(os.path.join(project_path, 'dataFile')).readline().rstrip().split('\t')) - 1
+
+        # project.create_profile_db(request.POST.get('desc'))
+        #project.save()
 
     return render(request, 'projects/new.html')
