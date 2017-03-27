@@ -4,9 +4,9 @@ from django.shortcuts import render
 from django.http import Http404, JsonResponse, HttpResponse
 
 from main.utils import get_project, check_view_permission, check_write_permission
+import main.utils as utils
 
-from anvio.utils import get_names_order_from_newick_tree
-from anvio.fastalib import SequenceSource
+import anvio.bottleroutes as routes
 
 import zipfile
 import hashlib
@@ -53,118 +53,44 @@ def ajax_handler(request, username, project_name, view_key, requested_url):
         raise Http404
 
     project = get_project(username, project_name)
+
     if not check_view_permission(project, request.user, view_key):
         raise Http404
 
-    project_path = project.get_path()
+    read_only = not check_write_permission(project, request.user)
+    
+    d = project.get_interactive(read_only=read_only)
+
+    bottle_request = utils.MockBottleRequest(django_request=request)
+    bottle_response = utils.MockBottleResponse()
 
     if requested_url.startswith('data/init'):
-        return JsonResponse({"title": project.name,
-                             "description": (project.get_description()),
-                             "clusterings": ('treeData', {'treeData': ''}),
-                             "views": ('single', {'single': ''}),
-                             "contigLengths": {},
-                             "mode": "server",
-                             "readOnly": not check_write_permission(project, request.user),
+        return JsonResponse({ "title": project.name,
+                             "description": (d.p_meta['description']),
+                             "clusterings": (d.p_meta['default_clustering'], d.p_meta['clusterings']),
+                             "views": (d.default_view, dict(list(zip(list(d.views.keys()), list(d.views.keys()))))),
+                             "contigLengths": dict([tuple((c, d.splits_basic_info[c]['length']),) for c in d.splits_basic_info]),
+                             "defaultView": d.views[d.default_view],
+                             "mode": 'server',
+                             "readOnly": d.read_only, 
                              "binPrefix": "Bin_",
-                             "sessionId": 1,
-                             "samplesOrder": {},
-                             "sampleInformation": {},
-                             "sampleInformationDefaultLayerOrder": {},
-                             "stateAutoload": None,
-                             "collectionAutoload": None,
+                             "sessionId": 0,
+                             "samplesOrder": d.samples_order_dict,
+                             "sampleInformation": d.samples_information_dict,
+                             "sampleInformationDefaultLayerOrder": d.samples_information_default_layer_order,
+                             "stateAutoload": d.state_autoload,
+                             "collectionAutoload": d.collection_autoload,
                              "noPing": True,
-                             "inspectionAvailable": False,
-                             "sequencesAvailable": os.path.exists(os.path.join(project_path, 'fastaFile'))})
-
-    elif requested_url.startswith('tree/'):
-        if os.path.exists(os.path.join(project_path, 'treeFile')):
-            return HttpResponse(open(os.path.join(project_path, 'treeFile')), content_type='text/plain')
-        else:
-            data = []
-            with open(os.path.join(project_path, 'dataFile'), 'r') as f:
-                for line in f:
-                    data.append(line.replace('\n', '').split('\t')[0])
-
-            return JsonResponse(data[1:], safe=False)
+                             "inspectionAvailable": d.auxiliary_profile_data_available,
+                             "sequencesAvailable": True if d.split_sequences else False})
 
     elif requested_url.startswith('data/view/'):
-        
-        # If data file exists convert tab separated file to json and return.
-        if os.path.exists(os.path.join(project_path, 'dataFile')):
-            data = []
-            with open(os.path.join(project_path, 'dataFile'), 'r') as f:
-                for line in f:
-                    data.append(line.replace('\n', '').split('\t'))
+        param = requested_url.split('/')[-1]
+        return HttpResponse(routes.get_view_data(d, bottle_request, bottle_response, param), content_type='application/json')
 
-        # If data file does not exists, open newick tree generate dummy data file using leaf labels.
-        else:
-            data = [['contigs', 'names']]
-            for leaf_name in get_names_order_from_newick_tree(os.path.join(project_path, 'treeFile'), reverse=True):
-                data.append([leaf_name, leaf_name])
-
-        return JsonResponse(data, safe=False)
-
-    elif requested_url.startswith('data/collections'):
-        return JsonResponse(project.get_collections().collections_dict, safe=False)
-
-    elif requested_url.startswith('data/collection/'):
-        return JsonResponse(project.get_collection(requested_url.split('/')[-1]), safe=False)
-
-    elif requested_url.startswith('data/contig/'):
-        if os.path.exists(os.path.join(project_path, 'fastaFile')):
-            fasta = SequenceSource(os.path.join(project_path, 'fastaFile'))
-            split_name = requested_url.split('/')[-1]
-            
-            seq = fasta.get_seq_by_read_id(split_name)
-
-            if seq:
-                data = {
-                    'sequence': seq,
-                    'header': split_name,
-                }
-                return JsonResponse(data, safe=False)
-            else:
-                raise Http404
-        else:
-            raise Http404
-    elif requested_url.startswith('store_collection'):
-        if not check_write_permission(project, request.user):
-            raise Http404
-
-        source = request.POST.get('source')
-        data = json.loads(request.POST.get('data'))
-        colors = json.loads(request.POST.get('colors'))
-
-        return JsonResponse(project.store_collection(source, data, colors), safe=False)
-
-    elif requested_url.startswith('store_description'):
-        if not check_write_permission(project, request.user):
-            raise Http404
-
-        description = request.POST.get('description')
-        project.set_description(description)
-        return JsonResponse(None, safe=False)
-
-    elif requested_url.startswith('state/all'):
-        return JsonResponse(project.get_states(), safe=False)
-
-    elif requested_url.startswith('state/get'):
-        name = request.POST.get('name')
-        states = project.get_states()
-        if name in states:
-            return JsonResponse(states[name]['content'], safe=False)
-        else:
-            return JsonResponse(None, safe=False)
-
-    elif requested_url.startswith('state/save'):
-        if not check_write_permission(project, request.user):
-            raise Http404
-
-        name = request.POST.get('name')
-        content = request.POST.get('content')
-
-        return JsonResponse(project.store_state(name, content), safe=False)
+    elif requested_url.startswith('tree/'):
+        param = requested_url.split('/')[-1]
+        return HttpResponse(routes.get_items_ordering(d, bottle_request, bottle_response, param), content_type='application/json')
 
     elif requested_url.startswith('project'):
         content = {
@@ -173,3 +99,38 @@ def ajax_handler(request, username, project_name, view_key, requested_url):
             'user_email_hash': hashlib.md5(project.user.email.encode('utf-8')).hexdigest()
         }
         return JsonResponse(content, safe=False)
+
+    elif requested_url.startswith('data/collections'):
+        return HttpResponse(routes.get_collections(d, bottle_request, bottle_response), content_type='application/json')
+
+    elif requested_url.startswith('data/collection/'):
+        param = requested_url.split('/')[-1]
+        return HttpResponse(routes.get_collection_dict(d, bottle_request, bottle_response, param), content_type='application/json')
+
+    elif requested_url.startswith('store_collection'):
+        if not check_write_permission(project, request.user):
+            raise Http404
+
+        return HttpResponse(routes.store_collections_dict(d, bottle_request, bottle_response), content_type='application/json')
+
+    elif requested_url.startswith('data/contig/'):
+        param = requested_url.split('/')[-1]
+        return HttpResponse(routes.get_sequence_for_split(d, bottle_request, bottle_response, param), content_type='application/json')
+
+    elif requested_url.startswith('store_description'):
+        if not check_write_permission(project, request.user):
+            raise Http404
+
+        return HttpResponse(routes.store_description(d, bottle_request, bottle_response), content_type='application/json')
+
+    elif requested_url.startswith('state/all'):
+        return HttpResponse(routes.state_all(d, bottle_response), content_type='application/json')
+
+    elif requested_url.startswith('state/get'):
+        return HttpResponse(routes.get_state(d, bottle_request, bottle_response), content_type='application/json')
+
+    elif requested_url.startswith('state/save'):
+        if not check_write_permission(project, request.user):
+            raise Http404
+
+        return HttpResponse(routes.save_state(d, bottle_request, bottle_response), content_type='application/json')
