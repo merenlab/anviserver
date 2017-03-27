@@ -2,7 +2,8 @@ $(document).ready(function() {
     $('input:file').change(function(event) {
         var file = event.target.files[0];
         if (file) {
-            $('#txt_' + event.target.id).val('"' + file.name + '" selected.');
+            // TO DO: use semantic class name instead .input-group
+            $(event.target).closest('.input-group').find('input[type=text]').val('"' + file.name + '" selected. ');
         }
     });
 
