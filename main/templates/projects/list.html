@@ -19,12 +19,13 @@
             </thead>
             <tbody>
                 {% for project in projects %}
+                {% with project.get_interactive as interactive %}
                 <tr>
                     <td><a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a> {% if project.is_public %}<span class="label label-warning">Public</span>{% endif %}</td>
                     <td>{{ project.num_layers }}</td>
                     <td>{{ project.num_leaves }}</td>
-                    <td>{{ project.get_collection_count }}</td>
-                    <td>{{ project.get_states_count }}</td>
+                    <td>{{ interactive.collections.collections_dict|length }}</td>
+                    <td>{{ interactive.states_table.states|length }}</td>
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
                     <td class="text-center">
                         <a href="{% url 'projects_share' project.name %}" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-share"></span> Share</a>
@@ -32,6 +33,7 @@
                         <a href="#" onclick="deleteProject('{{ project.name }}');" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
                     </td>
                 </tr>
+                {% endwith %}
                 {% endfor %}
             </tbody>
         </table>
@@ -53,7 +55,6 @@
 $(document).ready(function() {
     $('#project_table').DataTable({
         columnDefs: [{ orderable: false, targets: -1 }],
-        iDisplayLength: 20,
         order: [[ 5, "desc" ]]
     });
 

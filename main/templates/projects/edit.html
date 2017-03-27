@@ -23,10 +23,11 @@
             </table>
     </div>
 </div>
+{% with project.get_interactive as interactive %}
 <div class="col-md-6 col-sm-6">
     <div class="well">
             <legend>Collections</legend>
-            {% with project.get_collections.collections_dict as collections %}
+            {% with interactive.collections.collections_dict as collections %}
                 {% if collections %}
                 <table class="table table-hover">
                     <thead>
@@ -56,7 +57,7 @@
 <div class="col-md-6 col-sm-6">
     <div class="well">
             <legend>States</legend>
-            {% with project.get_states as states %}
+             {% with interactive.states_table.states as states %}
                 {% if states %}
                 <table class="table table-hover">
                     <thead>
@@ -83,6 +84,7 @@
             {% endwith %}
     </div>
 </div>
+{% endwith %}
 <script>
 
 function saveTextAsFile(index, name)
