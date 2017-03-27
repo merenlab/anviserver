@@ -4,8 +4,10 @@ from django.conf import settings
 
 from anvio.dbops import ProfileDatabase, TablesForCollections, TablesForStates, update_description_in_db
 from anvio.ccollections import Collections
+from anvio import interactive
 
 import random
+import argparse
 import shutil
 import os
 
@@ -31,74 +33,35 @@ class Project(models.Model):
     def get_path(self):
         return os.path.join(settings.USER_DATA_DIR, self.user.username, self.secret)
 
+    def get_file_path(self, filename, default=None, dont_check_exists=False):
+        full_path = os.path.join(self.get_path(), filename)
+        
+        if dont_check_exists:
+            return full_path
+
+        if os.path.exists(full_path):
+            return full_path
+        
+        return default
+
     def delete_project_path(self):
         shutil.rmtree(self.get_path())
 
-    def get_profile_path(self):
-        return os.path.join(self.get_path(), 'profile.db')
+    def create_project_path(self):
+        os.makedirs(self.get_path())
 
-    def get_profile_db(self):
-        return ProfileDatabase(self.get_profile_path(), quiet=True)
+    def get_interactive(self, read_only=True):
+        args = argparse.Namespace()
+        args.read_only = read_only
+        args.manual_mode = True
 
-    def create_profile_db(self, desc):
-        profile_db = self.get_profile_db()
-        profile_db.create({'db_type': 'profile', 'merged': True, 'contigs_db_hash': None, 'samples': '', 'description': desc})
-
-    def get_description(self):
-        return self.get_profile_db().meta['description']
-
-    def set_description(self, description):
-        update_description_in_db(self.get_profile_path(), description)
-
-    def get_collections(self):
-        collections = Collections()
-        collections.populate_collections_dict(self.get_profile_path())
-        return collections
-
-    def get_states(self):
-        return TablesForStates(self.get_profile_path()).states
-
-    def get_states_count(self):
-        return len(self.get_states())
-
-    def store_state(self, name, content):
-        try:
-            TablesForStates(self.get_profile_path()).store_state(name, content)
-            return {'status_code': '1'}
-        except:
-            return {'status_code': '0'}
-
-    def get_collection_count(self):
-        return len(self.get_collections().collections_dict)
-
-    def get_collection(self, collection_name):
-        collections = self.get_collections()
-        collection_dict = collections.get_collection_dict(collection_name)
-        bins_info_dict = collections.get_bins_info_dict(collection_name)
-
-        colors_dict = {}
-        for bin_name in bins_info_dict:
-            colors_dict[bin_name] = bins_info_dict[bin_name]['html_color']
-
-        return {'data': collection_dict, 'colors': colors_dict}
-
-    def store_collection(self, source, data, colors):
-        if not len(source):
-            return "Error: Collection name cannot be empty."
-
-        num_splits = sum(len(l) for l in list(data.values()))
-        if not num_splits:
-            return "Error: There are no selections to store (you haven't selected anything)."
-
-        bins_info_dict = {}
-        for bin_name in data:
-            bins_info_dict[bin_name] = {'html_color': colors[bin_name], 'source': "anvi-interactive"}
-
-        collections = TablesForCollections(self.get_profile_path())
-        collections.append(source, data, bins_info_dict)
-
-        msg = "New collection '%s' with %d bin%s been stored." % (source, len(data), 's have' if len(data) > 1 else ' has')
-        return msg
+        args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
+        args.tree                   = self.get_file_path('treeFile'  , default=None)
+        args.view_data              = self.get_file_path('dataFile'  , default=None)
+        args.fasta_file             = self.get_file_path('fastaFile' , default=None)
+        args.samples_information_db = self.get_file_path('samples.db', default=None)
+        
+        return interactive.InputHandler(args)
 
 class ProjectLink(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
