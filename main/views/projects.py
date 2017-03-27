@@ -143,7 +143,6 @@ def new_project(request):
             try:
                 leaves = get_names_order_from_newick_tree(project.get_file_path('tree.txt', default=None))
                 project.num_leaves = len(leaves) if leaves != [''] else 0
-                print(leaves)
             except:
                 project.num_leaves = 0
 
@@ -152,6 +151,9 @@ def new_project(request):
                 project.num_layers = len(interactive.views['single'][0]) - 1 # <- -1 because first column is contigs
             except:
                 project.num_layers = 0
+
+            # store description
+            dbops.update_description_in_db(project.get_file_path('profile.db', default=None), request.POST.get('description') or '')
 
             project.save()
             return JsonResponse({'status': 0})

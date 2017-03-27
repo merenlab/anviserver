@@ -19,9 +19,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3" for="name">Description</label>
+                <label class="control-label col-md-3" for="description">Description</label>
                 <div class="col-md-9">
-                    <textarea class="form-control" id="desc" maxlength="300" name="desc" placeholder="Short description of the project" title=""></textarea>
+                    <textarea class="form-control" id="description" maxlength="300" name="description" placeholder="Short description of the project" title=""></textarea>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
     </div>
 </div>
 <script>
-var simplemde = new SimpleMDE({ element: document.getElementById("desc") });
+var simplemde = new SimpleMDE({ element: document.getElementById("description") });
 </script>
 {% endblock %} {% block header %} {% load staticfiles %}
 <script src="{% static 'js/jquery.form.js' %}"></script>
