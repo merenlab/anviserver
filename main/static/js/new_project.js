@@ -1,5 +1,10 @@
 $(document).ready(function() {
-    
+    $('input:file').change(function(event) {
+        var file = event.target.files[0];
+        if (file) {
+            $('#txt_' + event.target.id).val('"' + file.name + '" selected.');
+        }
+    });
 
     function showPercent(percent) {
         $('#modalUploading .modal-header').text('Uploading... (' + percent +'%)');
