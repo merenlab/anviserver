@@ -82,7 +82,12 @@ def ajax_handler(request, username, project_name, view_key, requested_url):
                              "collectionAutoload": d.collection_autoload,
                              "noPing": True,
                              "inspectionAvailable": d.auxiliary_profile_data_available,
-                             "sequencesAvailable": True if d.split_sequences else False})
+                             "sequencesAvailable": True if d.split_sequences else False,
+                             "project": {
+                                'username': project.user.username,
+                                'fullname': project.user.userprofile.fullname if project.user.userprofile.fullname else project.user.username
+                                }
+                            })
 
     elif requested_url.startswith('data/view/'):
         param = requested_url.split('/')[-1]
@@ -91,14 +96,6 @@ def ajax_handler(request, username, project_name, view_key, requested_url):
     elif requested_url.startswith('tree/'):
         param = requested_url.split('/')[-1]
         return HttpResponse(routes.get_items_ordering(d, bottle_request, bottle_response, param), content_type='application/json')
-
-    elif requested_url.startswith('project'):
-        content = {
-            'project_name': project.name,
-            'username': project.user.username,
-            'user_email_hash': hashlib.md5(project.user.email.encode('utf-8')).hexdigest()
-        }
-        return JsonResponse(content, safe=False)
 
     elif requested_url.startswith('data/collections'):
         return HttpResponse(routes.get_collections(d, bottle_request, bottle_response), content_type='application/json')
