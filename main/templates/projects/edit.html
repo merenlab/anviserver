@@ -67,7 +67,7 @@
                     <tbody>
                     {% for key, values in states.items %}
                         <tr>
-                            <td><a href='#' onclick="saveTextAsFile({{ forloop.counter0 }} ,'{{ key }}');">{{ key }}</a>
+                            <td><a href='#' onclick="saveTextAsFile('state_content_{{ forloop.counter0 }}' ,'{{ key }}.json');">{{ key }}</a>
                                 <textarea id="state_content_{{ forloop.counter0 }}" style="display: none;">{{ values.content }}</textarea>
                             </td>
                             <td>{{ values.last_modified }}</td>
@@ -87,11 +87,11 @@
 {% endwith %}
 <script>
 
-function saveTextAsFile(index, name)
+function saveTextAsFile(textarea_id, name)
 {
-    var textToWrite = $('#state_content_' + index).val();
+    var textToWrite = $('#' + textarea_id).val();
     var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-    var fileNameToSaveAs = name + '.json';
+    var fileNameToSaveAs = name;
 
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
