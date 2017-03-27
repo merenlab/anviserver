@@ -56,9 +56,9 @@ class Project(models.Model):
         args.manual_mode = True
 
         args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
-        args.tree                   = self.get_file_path('treeFile'  , default=None)
-        args.view_data              = self.get_file_path('dataFile'  , default=None)
-        args.fasta_file             = self.get_file_path('fastaFile' , default=None)
+        args.tree                   = self.get_file_path('tree.txt'  , default=None)
+        args.view_data              = self.get_file_path('data.txt'  , default=None)
+        args.fasta_file             = self.get_file_path('fasta.fa'  , default=None)
         args.samples_information_db = self.get_file_path('samples.db', default=None)
         
         return interactive.InputHandler(args)

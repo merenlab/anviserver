@@ -124,17 +124,17 @@ def new_project(request):
 
             project.create_project_path()
 
-            fileTypes = ['treeFile', 'dataFile', 'fastaFile', 'samplesOrderFile', 'samplesInformationFile']
-            
+            fileTypes = ['tree.txt', 'data.txt', 'fasta.fa', 'samples-order.txt', 'samples-info.txt']
+
             for fileType in fileTypes:
                 if fileType in request.FILES:
                     put_project_file(project.get_path(), fileType, request.FILES[fileType])
 
-            samples_info = project.get_file_path('samplesOrderFile', default=None)
-            samples_order = project.get_file_path('samplesInformationFile', default=None)
+            samples_info = project.get_file_path('samples-order.txt', default=None)
+            samples_order = project.get_file_path('samples-info.txt', default=None)
             
             if samples_info or samples_order:
-                s = dbops.SamplesInformationDatabase(project.get_file_path('samples.db'), quiet=True)
+                s = dbops.SamplesInformationDatabase(project.get_file_path('samples.db', dont_check_exists=True), quiet=True)
                 s.create(samples_order, samples_info)
 
             interactive = project.get_interactive()
