@@ -6,6 +6,7 @@ from main.models import UserProfile, Project
 from anvio.utils import get_names_order_from_newick_tree
 
 import sqlite3
+import datetime
 import shutil
 import os
 
@@ -48,8 +49,9 @@ class Command(BaseCommand):
             is_superuser = True if row[11] == 'admin' else False
 
             user_paths[row[5]] = username
+            date_joined = datetime.datetime.strptime(row[12] + " UTC", "%Y-%m-%d")
 
-            newuser = User(username=username, password=password, email=email, is_active=is_active, is_superuser=is_superuser, is_staff=is_superuser)
+            newuser = User(username=username, password=password, email=email, is_active=is_active, is_superuser=is_superuser, is_staff=is_superuser, date_joined=date_joined)
             newuser.save()
 
             fullname = "%s %s" % (row[1], row[2])
@@ -105,7 +107,6 @@ class Command(BaseCommand):
             if not os.path.exists(newproject.get_profile_path()):
                 newproject.create_profile_db(description)
             else:
-                print(project_path)
                 try:
                     if description and len(description) > 0:
                         newproject.set_description(description)
@@ -117,7 +118,7 @@ class Command(BaseCommand):
                         newproject.num_layers = len(open(os.path.join(project_path, 'dataFile')).readline().rstrip().split('\t')) - 1
                 except: 
                     print("there is something wrong with this project: " + project_path)
-    
+
                 newproject.save()
         print(" - Successful")
 

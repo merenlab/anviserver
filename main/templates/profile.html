@@ -5,7 +5,7 @@
         <img src="{{ profile_user.email|gravatar:100 }}" />
     </div>
     <div style="float: left;">
-        <h2 style="margin-top: 0px; margin-bottom: 16px;">{% if profile_user.fullname %}{{ profile_user.fullname }}{% else %}{{ profile_user.username }}{% endif %}<small>'s public projects</small></h2>
+        <h2 style="margin-top: 0px; margin-bottom: 16px;">{% if profile_user.userprofile.fullname %}{{ profile_user.userprofile.fullname }}{% else %}{{ profile_user.username }}{% endif %}<small>'s public projects</small></h2>
         <span class="glyphicon glyphicon-calendar"></span> Member since <b>{{ profile_user.date_joined|date:"N Y" }}</b><br />
         {% if profile_user.userprofile.institution %}<span class="glyphicon glyphicon-education"></span> Affiliated with <b>{{ profile_user.userprofile.institution }}</b><br />{% endif %}
         {% if profile_user.userprofile.orcid %}<img src="https://orcid.org/sites/default/files/files/ID_symbol_B-W_16x16.png" /> ORCID ID <b><a href="https://orcid.org/{{ profile_user.userprofile.orcid }}">{{ profile_user.userprofile.orcid }}</a></b><br />{% endif %}
