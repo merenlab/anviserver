@@ -72,8 +72,7 @@
                             </div>
                         </div>
                 {% else %}
-                    <div class="col-sm-12 col-md-12">
-                        <div id="carousel" class="peopleCarouselImg carousel slide col-sm-6" data-ride="carousel" data-interval="4000">
+                        <div id="carousel" class="peopleCarouselImg carousel slide carousel-size" data-ride="carousel" data-interval="4000">
                             <ol class="carousel-indicators">
                                 <li data-target="#carousel" data-slide-to="0" class="active"></li>
                                 <li data-target="#carousel" data-slide-to="1"></li>
@@ -81,7 +80,7 @@
                                 <li data-target="#carousel" data-slide-to="4"></li>
                                 <li data-target="#carousel" data-slide-to="5"></li>
                             </ol>
-                            <div class="carousel-inner" role="listbox">
+                            <div class="carousel-inner carousel-size" role="listbox">
                                 <div class="item active">
                                     <img src="/static/img/carousel1.png" class="carouselImage">
                                 </div>
@@ -107,7 +106,6 @@
                                 <span class="sr-only">Next</span>
                             </a>
                         </div>
-                    </div>
                 {% endif %}
             {% endblock %}
         </div>
