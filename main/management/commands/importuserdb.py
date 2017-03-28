@@ -4,9 +4,12 @@ from django.conf import settings
 from main.models import UserProfile, Project
 
 from anvio.utils import get_names_order_from_newick_tree
+from anvio import dbops
+
+from datetime import datetime
+from datetime import timezone
 
 import sqlite3
-import datetime
 import shutil
 import os
 
@@ -49,7 +52,7 @@ class Command(BaseCommand):
             is_superuser = True if row[11] == 'admin' else False
 
             user_paths[row[5]] = username
-            date_joined = datetime.datetime.strptime(row[12] + " UTC", "%Y-%m-%d")
+            date_joined = datetime.strptime(row[12], "%Y-%m-%d").replace(tzinfo=timezone.utc)
 
             newuser = User(username=username, password=password, email=email, is_active=is_active, is_superuser=is_superuser, is_staff=is_superuser, date_joined=date_joined)
             newuser.save()
@@ -80,6 +83,7 @@ class Command(BaseCommand):
             except FileNotFoundError:
                 # if user path does not exists create empty dir for user
                 os.makedirs(dst)
+
         print(" - Successful")
         print("Migratins project table... ")
         
@@ -96,30 +100,50 @@ class Command(BaseCommand):
             username = row[2]
             description = row[3]
 
-            if not description or not len(description) > 0:
-                description = ""
+            #rename project files
+            fileTypes_old = ['treeFile', 'dataFile', 'fastaFile', 'samplesOrderFile', 'samplesInformationFile']
+            fileTypes_new = ['tree.txt', 'data.txt', 'fasta.fa', 'samples-order.txt', 'samples-info.txt']
 
-            newproject = Project(name=name, user=User.objects.get(username=username), secret=path)
-            newproject.save()
-
-            project_path = newproject.get_path()
-
-            if not os.path.exists(newproject.get_profile_path()):
-                newproject.create_profile_db(description)
-            else:
+            for i in range(5):
                 try:
-                    if description and len(description) > 0:
-                        newproject.set_description(description)
+                    os.rename(os.path.join(settings.USER_DATA_DIR, username, path, fileTypes_old[i]), os.path.join(settings.USER_DATA_DIR, username, path, fileTypes_new[i]))
+                except:
+                    pass
 
-                    if os.path.exists(os.path.join(project_path, 'treeFile')):
-                        newproject.num_leaves = len(get_names_order_from_newick_tree(os.path.join(project_path, 'treeFile')))
+            try:
+                if not description or not len(description) > 0:
+                    description = ""
 
-                    if os.path.exists(os.path.join(project_path, 'dataFile')):
-                        newproject.num_layers = len(open(os.path.join(project_path, 'dataFile')).readline().rstrip().split('\t')) - 1
-                except: 
-                    print("there is something wrong with this project: " + project_path)
+                project = Project(name=name, user=User.objects.get(username=username), secret=path)
 
-                newproject.save()
+                samples_info = project.get_file_path('samples-order.txt', default=None)
+                samples_order = project.get_file_path('samples-info.txt', default=None)
+                
+                if (samples_info or samples_order) and not project.get_file_path('samples.db', default=None):
+                    s = dbops.SamplesInformationDatabase(project.get_file_path('samples.db', dont_check_exists=True), quiet=True)
+                    s.create(samples_order, samples_info)
+
+                interactive = project.get_interactive()
+
+                # try to get number of leaves
+                try:
+                    leaves = get_names_order_from_newick_tree(project.get_file_path('tree.txt', default=None))
+                    project.num_leaves = len(leaves) if leaves != [''] else 0
+                except:
+                    project.num_leaves = 0
+
+                # try to get number of layers
+                try:
+                    project.num_layers = len(interactive.views['single'][0]) - 1 # <- -1 because first column is contigs
+                except:
+                    project.num_layers = 0
+
+                # store description
+                dbops.update_description_in_db(project.get_file_path('profile.db', default=None), description or '')
+                project.save()
+            except Exception as e:
+                print(username + " " + name + " " + path + " failed to create project, here is the exception " + str(e))
+        
         print(" - Successful")
 
 
