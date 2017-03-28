@@ -141,6 +141,3 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Site Settings
 SITE_ID = 1
-
-# Sendfile Backend
-SENDFILE_BACKEND = 'sendfile.backends.development'
