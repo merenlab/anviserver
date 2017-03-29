@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 from django.conf import settings
 from main.models import UserProfile, Project
 
@@ -12,6 +13,15 @@ from datetime import timezone
 import sqlite3
 import shutil
 import os
+
+def sanitize_username(username):
+    if '@' in username:
+        username = username.split('@')[0]
+
+    username = slugify(username).replace('-', '_')
+
+    return username
+
 
 class Command(BaseCommand):
     help = 'Import UserDB, usage: importuserdb <userdbpath> <userfilespath>'
@@ -45,7 +55,7 @@ class Command(BaseCommand):
         user_paths = {}
 
         for row in conn.execute('SELECT * FROM users;'):
-            username = row[0]
+            username = sanitize_username(row[0])
             password = "crypt$$" + row[4]
             email = row[3]
             is_active = True
@@ -97,7 +107,7 @@ class Command(BaseCommand):
         for row in conn.execute('SELECT * FROM projects;'):
             name = row[0]
             path = row[1]
-            username = row[2]
+            username = sanitize_username(row[2])
             description = row[3]
 
             #rename project files
