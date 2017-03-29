@@ -63,11 +63,17 @@ class Project(models.Model):
         
         return interactive.InputHandler(args)
 
-    def synchronize_num_states(self):
+    def synchronize_num_states(self, save=False):
         self.num_states = len(self.get_interactive().states_table.states)
 
-    def synchronize_num_collections(self):
+        if save:
+            self.save()
+
+    def synchronize_num_collections(self, save=False):
         self.num_collections = len(self.get_interactive().collections.collections_dict)
+
+        if save:
+            self.save()
 
 
 class ProjectLink(models.Model):

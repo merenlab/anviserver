@@ -108,7 +108,9 @@ def ajax_handler(request, username, project_name, view_key, requested_url):
         if not check_write_permission(project, request.user):
             raise Http404
 
-        return HttpResponse(routes.store_collections_dict(d, bottle_request, bottle_response), content_type='application/json')
+        ret = HttpResponse(routes.store_collections_dict(d, bottle_request, bottle_response), content_type='application/json')
+        project.synchronize_num_collections(save=True)
+        return ret
 
     elif requested_url.startswith('data/contig/'):
         param = requested_url.split('/')[-1]
@@ -130,4 +132,6 @@ def ajax_handler(request, username, project_name, view_key, requested_url):
         if not check_write_permission(project, request.user):
             raise Http404
 
-        return HttpResponse(routes.save_state(d, bottle_request, bottle_response), content_type='application/json')
+        ret = HttpResponse(routes.save_state(d, bottle_request, bottle_response), content_type='application/json')
+        project.synchronize_num_states(save=True)
+        return ret
