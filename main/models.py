@@ -27,6 +27,9 @@ class Project(models.Model):
     num_leaves = models.IntegerField(default=0)
     num_layers = models.IntegerField(default=0)
 
+    num_states = models.IntegerField(default=0)
+    num_collections = models.IntegerField(default=0)
+
     def __str__(self):
         return 'Project ' + str(self.name) + ' (Created By: ' + str(self.user) + ')'
 
