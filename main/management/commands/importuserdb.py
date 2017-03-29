@@ -140,9 +140,14 @@ class Command(BaseCommand):
 
                 # store description
                 dbops.update_description_in_db(project.get_file_path('profile.db', default=None), description or '')
+
+                project.synchronize_num_states()
+                project.synchronize_num_collections()
+
                 project.save()
             except Exception as e:
                 print(username + " " + name + " " + path + " failed to create project, here is the exception " + str(e))
+                shutil.rmtree(os.path.join(settings.USER_DATA_DIR, username, path))
         
         print(" - Successful")
 
