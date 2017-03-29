@@ -20,7 +20,6 @@
             <tbody>
                 {% for projectteam in projectteams %}
                 {% with projectteam.project as project %}
-                {% with project.get_interactive as interactive %}
                 <tr>
                     <td>
                         {% if projectteam.can_write %}
@@ -33,12 +32,11 @@
                     </td>
                     <td>{{ project.num_layers }}</td>
                     <td>{{ project.num_leaves }}</td>
-                    <td>{{ interactive.collections.collections_dict|length }}</td>
-                    <td>{{ interactive.states_table.states|length }}</td>
+                    <td>{{ project.num_collections }}</td>
+                    <td>{{ project.num_states }}</td>
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
                     <td>{{ project.user.username }}</td>
                 </tr>
-                {% endwith %}
                 {% endwith %}
                 {% endfor %}
             </tbody>

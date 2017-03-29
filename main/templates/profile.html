@@ -29,13 +29,12 @@
             </thead>
             <tbody>
                 {% for project in projects %}
-                {% with project.get_interactive as interactive %}
                 <tr>
                     <td><a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a></td>
                     <td>{{ project.num_layers }}</td>
                     <td>{{ project.num_leaves }}</td>
-                    <td>{{ interactive.collections.collections_dict|length }}</td>
-                    <td>{{ interactive.states_table.states|length }}</td>
+                    <td>{{ project.num_collections }}</td>
+                    <td>{{ project.num_states }}</td>
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
                     <td class="td-center" style="text-align: center;">
                         <a href="{% url 'show_interactive' project.user.username project.name %}" class="btn btn-xs btn-primary">
@@ -46,7 +45,6 @@
                         </a>
                     </td>
                 </tr>
-                {% endwith %}
                 {% endfor %}
             </tbody>
         </table>

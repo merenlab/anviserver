@@ -19,13 +19,12 @@
             </thead>
             <tbody>
                 {% for project in projects %}
-                {% with project.get_interactive as interactive %}
                 <tr>
                     <td><a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a> {% if project.is_public %}<span class="label label-warning">Public</span>{% endif %}</td>
                     <td>{{ project.num_layers }}</td>
                     <td>{{ project.num_leaves }}</td>
-                    <td>{{ interactive.collections.collections_dict|length }}</td>
-                    <td>{{ interactive.states_table.states|length }}</td>
+                    <td>{{ project.num_collections }}</td>
+                    <td>{{ project.num_states }}</td>
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
                     <td class="text-center">
                         <a href="{% url 'projects_share' project.name %}" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-share"></span> Share</a>
@@ -33,7 +32,6 @@
                         <a href="#" onclick="deleteProject('{{ project.name }}');" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
                     </td>
                 </tr>
-                {% endwith %}
                 {% endfor %}
             </tbody>
         </table>
