@@ -21,9 +21,6 @@ class Project(models.Model):
     secret = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    state_autoload = models.CharField(max_length=100, default='default')
-    collection_autoload = models.CharField(max_length=100, default='default')
-
     num_leaves = models.IntegerField(default=0)
     num_layers = models.IntegerField(default=0)
 
