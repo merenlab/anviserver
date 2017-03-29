@@ -63,6 +63,13 @@ class Project(models.Model):
         
         return interactive.InputHandler(args)
 
+    def synchronize_num_states(self):
+        self.num_states = len(self.get_interactive().states_table.states)
+
+    def synchronize_num_collections(self):
+        self.num_collections = len(self.get_interactive().collections.collections_dict)
+
+
 class ProjectLink(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     link = models.CharField(max_length=64)
