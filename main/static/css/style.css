@@ -89,12 +89,8 @@ hr.separator {
 }
 
 .greeting {
-    background-image: url("/static/img/vuoi.png");
+    background-image: url("/static/img/fractal.jpg");
     padding: 20px;
-}
-
-.greeting img {
-    filter: invert(50%);
 }
 
 /*.carousel-inner > .item > img {
