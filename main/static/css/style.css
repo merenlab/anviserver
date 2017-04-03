@@ -72,7 +72,7 @@ hr.separator {
 
 .carousel-size {
     width: 100%;
-    height: 480px !important;
+    height: 360px !important;
     margin-bottom: 48px;
 }
 
@@ -87,6 +87,20 @@ hr.separator {
     display: block;
     margin:0 auto;
 }
+
+.greeting {
+    background-image: url("/static/img/vuoi.png");
+    padding: 20px;
+}
+
+.greeting img {
+    filter: invert(50%);
+}
+
+/*.carousel-inner > .item > img {
+  width:640px;
+  height:360px;
+}*/
 
 /* Sticky footer styles
 -------------------------------------------------- */
