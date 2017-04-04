@@ -58,7 +58,9 @@
 $(document).ready(function() {
     $('#project_table').DataTable({
         columnDefs: [{ orderable: false, targets: -1 }],
-        order: [[ 5, "desc" ]]
+        order: [[ 5, "desc" ]],
+        lengthMenu: [[10, 20, 50, 100, -1], [10, 20, 50, 100, "All"]],
+        pageLength: 10,
     });
 
     $("#project_table").on('draw.dt', function() {
