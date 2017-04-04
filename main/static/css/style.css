@@ -93,6 +93,14 @@ hr.separator {
     padding: 20px;
 }
 
+table tbody tr td .btn-group {
+    visibility: hidden;
+}
+
+table tbody tr:hover td .btn-group {
+    visibility: inherit;
+}
+
 /*.carousel-inner > .item > img {
   width:640px;
   height:360px;
