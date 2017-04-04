@@ -2,21 +2,24 @@
 <div class="page-header">
     <h3><a href="{% url 'projects' %}">My Projects</a> &raquo; "{{ project.name }}" details</h3>
 </div>
-<div class="col-md-12 col-sm-12">
+<div class="col-md-6 col-sm-6">
     <div class="well">
-        <legend>Project files</legend>
+        <legend>
+            Project files
+            <a href="{% url 'download_zip' project.user.username project.name %}" class="btn btn-xs btn-success" style="float: right;">
+                <span class="glyphicon glyphicon-download-alt"></span> Download ZIP
+            </a>
+        </legend>
         <table class="table table-hover">
             <thead>
                 <th>Name</th>
                 <th>Size</th>
-                <th class="td-center">Action</th>
             </thead>
             <tbody>
             {% for file in project_files %}
                 <tr>
                     <td>{{ file.name }}</td>
                     <td>{{ file.size|filesizeformat }}</td>
-                    <td class="td-center">asd</td>
                 </tr>
             {% endfor %}
             </tbody>
