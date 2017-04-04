@@ -31,7 +31,7 @@ def list_projects(request):
     return render(request, 'projects/list.html', context)
 
 @login_required
-def edit_project(request, project_name):
+def details_project(request, project_name):
     project = get_project(request.user.username, project_name)
 
     files = []
@@ -42,7 +42,7 @@ def edit_project(request, project_name):
         'project': project,
         'project_files': files
     }
-    return render(request, 'projects/edit.html', context)
+    return render(request, 'projects/details.html', context)
 
 
 @login_required

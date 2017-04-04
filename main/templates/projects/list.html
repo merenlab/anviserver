@@ -31,7 +31,7 @@
                         <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{% url 'projects_share' project.name %}"><span class="glyphicon glyphicon-share"></span> Share</a></li>
-                                <li><a href="{% url 'projects_edit' project.name %}"><span class="glyphicon glyphicon-info-sign"></span> Info</a></li>
+                                <li><a href="{% url 'projects_details' project.name %}"><span class="glyphicon glyphicon-info-sign"></span> Details</a></li>
                                 <li><a href="#" onclick="deleteProject('{{ project.name }}');"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
                             </ul>
                     </div>

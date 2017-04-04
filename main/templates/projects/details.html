@@ -1,6 +1,6 @@
-{% extends 'index.html' %} {% block title %}Edit "{{ project.name }}"{% endblock %} {% block content %}
+{% extends 'index.html' %} {% block title %}"{{ project.name }}" details{% endblock %} {% block content %}
 <div class="page-header">
-    <h3><a href="{% url 'projects' %}">My Projects</a> &raquo; Edit "{{ project.name }}"</h3>
+    <h3><a href="{% url 'projects' %}">My Projects</a> &raquo; "{{ project.name }}" details</h3>
 </div>
 <div class="col-md-12 col-sm-12">
     <div class="well">

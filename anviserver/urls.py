@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.default.urls')),
 
     url(r'^projects/new', projects.new_project, name="projects_new"),
-    url(r'^projects/edit/(?P<project_name>[\w|\ \-]+)', projects.edit_project, name="projects_edit"),
+    url(r'^projects/details/(?P<project_name>[\w|\ \-]+)', projects.details_project, name="projects_details"),
     url(r'^projects/share/(?P<project_name>[\w|\ \-]+)', projects.share_project, name="projects_share"),
     url(r'^projects', projects.list_projects, name="projects"),
 
