@@ -28,7 +28,7 @@
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
                     <td class="text-center">
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret"></span></button>
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{% url 'projects_share' project.name %}"><span class="glyphicon glyphicon-share"></span> Share</a></li>
                                 <li><a href="{% url 'projects_details' project.name %}"><span class="glyphicon glyphicon-info-sign"></span> Details</a></li>
@@ -63,10 +63,6 @@ $(document).ready(function() {
 
     $("#project_table").on('draw.dt', function() {
         jQuery("time.timeago").timeago();
-    });
-
-    $('tr').mouseleave(function() {
-        $('[data-toggle="dropdown"]').parent().removeClass('open');
     });
 } );
 
