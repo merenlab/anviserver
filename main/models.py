@@ -17,6 +17,7 @@ def generate_random_pk():
 class Project(models.Model):
     user = models.ForeignKey(User, default=1)
     name = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
     secret = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)

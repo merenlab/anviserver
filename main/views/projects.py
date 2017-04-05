@@ -117,8 +117,10 @@ def share_project(request, project_name):
 def new_project(request):
     if request.method == "POST":
         try:
-            name = slugify(request.POST.get('name')).replace('-', '_')
+            name = request.POST.get('name')
+            slug = slugify(request.POST.get('slug')).replace('-', '_')
             project = Project(name=name,
+                              slug=slug,
                               user=request.user,
                               secret=get_random_string(length=32))
 
