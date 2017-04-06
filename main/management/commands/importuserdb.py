@@ -106,6 +106,7 @@ class Command(BaseCommand):
         """
         for row in conn.execute('SELECT * FROM projects;'):
             name = row[0]
+            slug = slugify(name).replace('-', '_')
             path = row[1]
             username = sanitize_username(row[2])
             description = row[3]
@@ -124,7 +125,7 @@ class Command(BaseCommand):
                 if not description or not len(description) > 0:
                     description = ""
 
-                project = Project(name=name, user=User.objects.get(username=username), secret=path)
+                project = Project(name=name, slug=slug, user=User.objects.get(username=username), secret=path)
 
                 samples_info = project.get_file_path('samples-order.txt', default=None)
                 samples_order = project.get_file_path('samples-info.txt', default=None)
