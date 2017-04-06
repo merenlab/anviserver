@@ -119,6 +119,10 @@ def new_project(request):
         try:
             name = request.POST.get('name')
             slug = slugify(name).replace('-', '_')
+
+            if Project.objects.filter(user=request.user, slug=slug):
+                raise Exception("Project with same name already exists, please give another name.")
+
             project = Project(name=name,
                               slug=slug,
                               user=request.user,
@@ -160,7 +164,12 @@ def new_project(request):
             project.save()
             return JsonResponse({'status': 0})
         except Exception as e:
-            project.delete_project_path()
+            try:
+                project.delete_project_path()
+            except:
+                # slug is not unique, so there is no project instance or direcotry created.
+                pass
+
             return JsonResponse({
                     'status': 1,
                     'message': str(e.clear_text()) if 'clear_text' in dir(e) else str(e)
