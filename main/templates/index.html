@@ -31,7 +31,7 @@
                                         {% elif feeditem.projectteam %}
                                             {% profile_link feeditem.projectteam.project.user request.user %}
                                             shared 
-                                            <a href="{% url 'show_interactive' feeditem.projectteam.project.user.username feeditem.projectteam.project.name %}">
+                                            <a href="{% url 'show_interactive' feeditem.projectteam.project.user.username feeditem.projectteam.project.slug %}">
                                                 {{ feeditem.projectteam.project.name }}
                                             </a>
                                             with
@@ -40,7 +40,7 @@
                                             </a>
                                         {% elif feeditem.project %}
                                             You created project 
-                                            <a href="{% url 'show_interactive' feeditem.project.user.username feeditem.project.name %}">
+                                            <a href="{% url 'show_interactive' feeditem.project.user.username feeditem.project.slug %}">
                                                 {{ feeditem.project.name }}
                                             </a>
                                         {% endif %}

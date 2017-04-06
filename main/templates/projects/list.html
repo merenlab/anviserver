@@ -20,7 +20,7 @@
             <tbody>
                 {% for project in projects %}
                 <tr>
-                    <td><a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a> {% if project.is_public %}<span class="label label-warning">Public</span>{% endif %}</td>
+                    <td><a href="{% url 'show_interactive' project.user project.slug %}">{{ project.name }}</a> {% if project.is_public %}<span class="label label-warning">Public</span>{% endif %}</td>
                     <td>{{ project.num_layers }}</td>
                     <td>{{ project.num_leaves }}</td>
                     <td>{{ project.num_collections }}</td>
@@ -30,9 +30,9 @@
                     <div class="btn-group" role="group" aria-label="...">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret"></span></button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{% url 'projects_share' project.name %}"><span class="glyphicon glyphicon-share"></span> Share</a></li>
-                                <li><a href="{% url 'projects_details' project.name %}"><span class="glyphicon glyphicon-info-sign"></span> Details</a></li>
-                                <li><a href="#" onclick="deleteProject('{{ project.name }}');"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
+                                <li><a href="{% url 'projects_share' project.slug %}"><span class="glyphicon glyphicon-share"></span> Share</a></li>
+                                <li><a href="{% url 'projects_details' project.slug %}"><span class="glyphicon glyphicon-info-sign"></span> Details</a></li>
+                                <li><a href="#" onclick="deleteProject('{{ project.slug }}');"><span class="glyphicon glyphicon-trash"></span> Delete</a></li>
                             </ul>
                     </div>
                     </td>
@@ -68,14 +68,14 @@ $(document).ready(function() {
     });
 } );
 
-function deleteProject(name) {
+function deleteProject(slug) {
     if (!confirm("Do you really want to delete '" + name + "'?"))
         return;
     $.ajax({
         type: "POST",
         url: "{% url 'projects' %}",
         data: {
-            'name': name,
+            'slug': slug,
             'action': 'delete',
             'csrfmiddlewaretoken': '{{csrf_token}}'
         },

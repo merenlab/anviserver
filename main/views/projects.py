@@ -19,7 +19,7 @@ def list_projects(request):
     action = request.POST.get('action')
 
     if action == 'delete':
-        project = get_project(request.user.username, request.POST.get('name'))
+        project = get_project(request.user.username, request.POST.get('slug'))
 
         if project:
             project.delete_project_path()
@@ -31,8 +31,8 @@ def list_projects(request):
     return render(request, 'projects/list.html', context)
 
 @login_required
-def details_project(request, project_name):
-    project = get_project(request.user.username, project_name)
+def details_project(request, project_slug):
+    project = get_project(request.user.username, project_slug)
 
     files = []
     for f in os.listdir(project.get_path()):
@@ -46,8 +46,8 @@ def details_project(request, project_name):
 
 
 @login_required
-def share_project(request, project_name):
-    project = get_project(request.user.username, project_name)
+def share_project(request, project_slug):
+    project = get_project(request.user.username, project_slug)
     action = request.POST.get('action')
 
     if action == 'generate_link':
@@ -118,7 +118,7 @@ def new_project(request):
     if request.method == "POST":
         try:
             name = request.POST.get('name')
-            slug = slugify(request.POST.get('slug')).replace('-', '_')
+            slug = slugify(name).replace('-', '_')
             project = Project(name=name,
                               slug=slug,
                               user=request.user,

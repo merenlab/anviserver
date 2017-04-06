@@ -30,17 +30,17 @@
             <tbody>
                 {% for project in projects %}
                 <tr>
-                    <td><a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a></td>
+                    <td><a href="{% url 'show_interactive' project.user project.slug %}">{{ project.name }}</a></td>
                     <td>{{ project.num_layers }}</td>
                     <td>{{ project.num_leaves }}</td>
                     <td>{{ project.num_collections }}</td>
                     <td>{{ project.num_states }}</td>
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
                     <td class="td-center" style="text-align: center;">
-                        <a href="{% url 'show_interactive' project.user.username project.name %}" class="btn btn-xs btn-primary">
+                        <a href="{% url 'show_interactive' project.user.username project.slug %}" class="btn btn-xs btn-primary">
                             <span class="glyphicon glyphicon-eye-open"></span> View
                         </a>
-                        <a href="{% url 'download_zip' project.user.username project.name %}" class="btn btn-xs btn-success">
+                        <a href="{% url 'download_zip' project.user.username project.slug %}" class="btn btn-xs btn-success">
                              <span class="glyphicon glyphicon-download-alt"></span> Download ZIP
                         </a>
                     </td>

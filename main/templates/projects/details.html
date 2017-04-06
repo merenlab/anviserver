@@ -6,7 +6,7 @@
     <div class="well">
         <legend>
             Project files
-            <a href="{% url 'download_zip' project.user.username project.name %}" class="btn btn-xs btn-success" style="float: right;">
+            <a href="{% url 'download_zip' project.user.username project.slug %}" class="btn btn-xs btn-success" style="float: right;">
                 <span class="glyphicon glyphicon-download-alt"></span> Download ZIP
             </a>
         </legend>

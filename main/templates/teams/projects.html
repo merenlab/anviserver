@@ -27,7 +27,7 @@
                         {% else %}
                             <span class="label label-default">Read only</span>
                         {% endif %}
-                        <a href="{% url 'show_interactive' project.user project.name %}">{{ project.name }}</a>
+                        <a href="{% url 'show_interactive' project.user project.slug %}">{{ project.name }}</a>
 
                     </td>
                     <td>{{ project.num_layers }}</td>
@@ -35,7 +35,7 @@
                     <td>{{ project.num_collections }}</td>
                     <td>{{ project.num_states }}</td>
                     <td><small><time class="timeago" datetime='{{ project.created_at|date:"c" }}'>{{ project.created_at }}</time><small></td>
-                    <td>{{ project.user.username }}</td>
+                    <td><a href="{% url 'user_profile' project.user.username %}">{{ project.user.username }}</a></td>
                 </tr>
                 {% endwith %}
                 {% endfor %}

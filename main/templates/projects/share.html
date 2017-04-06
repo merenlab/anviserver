@@ -10,7 +10,7 @@
                 <label class="control-label col-md-3" for="name">Make project public</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                         <input type="checkbox" {% if project.is_public %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" onChange="set_public('{{ project.name }}', $(this).prop('checked'));" data-offstyle="danger">
+                         <input type="checkbox" {% if project.is_public %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" onChange="set_public($(this).prop('checked'));" data-offstyle="danger">
                          <div class="alert alert-info alert-small" role="alert">Public projects will be listed on your public profile and can be viewed for everyone.</div>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                             {% for link in project.projectlink_set.all %}
                             <tr>
                                 <td>
-                                    <small><a href="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ link.link }}">{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.name%}?view_key={{ link.link }}</a></small>
+                                    <small><a href="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.slug %}?view_key={{ link.link }}">{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.slug%}?view_key={{ link.link }}</a></small>
                                 </td>
                                 <td>
                                      <small><time class="timeago" datetime='{{ link.created_at|date:"c" }}'>{{ link.created_at }}</time><small>
@@ -129,7 +129,7 @@ $(document).ajaxComplete(function() {
 function generate_link() {
     $.ajax({
         type: "POST",
-        url: "{% url 'projects_share' project.name %}",
+        url: "{% url 'projects_share' project.slug %}",
         data: {
             'action': 'generate_link',
             'csrfmiddlewaretoken': '{{csrf_token}}',
@@ -145,7 +145,7 @@ function generate_link() {
 function delete_link(link) {
     $.ajax({
         type: "POST",
-        url: "{% url 'projects_share' project.name %}",
+        url: "{% url 'projects_share' project.slug %}",
         data: {
             'action': 'delete_link',
             'link': link,
@@ -160,7 +160,7 @@ function delete_link(link) {
 function share_with_team() {
     $.ajax({
         type: "POST",
-        url: "{% url 'projects_share' project.name %}",
+        url: "{% url 'projects_share' project.slug %}",
         data: {
             'action': 'share_with_team',
             'team_id': $('#team_id').val(),
@@ -175,7 +175,7 @@ function share_with_team() {
 function delete_team(id) {
     $.ajax({
         type: "POST",
-        url: "{% url 'projects_share' project.name %}",
+        url: "{% url 'projects_share' project.slug %}",
         data: {
             'action': 'delete_team',
             'team_id': id,
@@ -190,7 +190,7 @@ function delete_team(id) {
 function set_team_write_permission(team_id, permission) {
     $.ajax({
         type: "POST",
-        url: "{% url 'projects_share' project.name %}",
+        url: "{% url 'projects_share' project.slug %}",
         data: {
             'action': 'set_team_write_permission',
             'team_id': team_id,
@@ -203,10 +203,10 @@ function set_team_write_permission(team_id, permission) {
     });
 }
 
-function set_public(project_name, permission) {
+function set_public(permission) {
     $.ajax({
         type: "POST",
-        url: "{% url 'projects_share' project.name %}",
+        url: "{% url 'projects_share' project.slug %}",
         data: {
             'action': 'set_public',
             'permission': permission,

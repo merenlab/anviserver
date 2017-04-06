@@ -14,8 +14,8 @@ import json
 import os
 import io
 
-def show_interactive(request, username, project_name):
-    project = get_project(username, project_name)
+def show_interactive(request, username, project_slug):
+    project = get_project(username, project_slug)
 
     view_key = request.GET.get('view_key')
     if view_key is None:
@@ -27,8 +27,8 @@ def show_interactive(request, username, project_name):
     return render(request, 'interactive.html', {'project': project, 'view_key': view_key})
 
 
-def download_zip(request, username, project_name):
-    project = get_project(username, project_name)
+def download_zip(request, username, project_slug):
+    project = get_project(username, project_slug)
 
     view_key = request.GET.get('view_key')
     if view_key is None:
@@ -43,16 +43,16 @@ def download_zip(request, username, project_name):
             backup_zip.write(os.path.join(project.get_path(), f), f)
 
     response = HttpResponse(zip_io.getvalue(), content_type='application/x-zip-compressed')
-    response['Content-Disposition'] = 'attachment; filename=%s' % project.name + ".zip"
+    response['Content-Disposition'] = 'attachment; filename=%s' % project.slug + ".zip"
     response['Content-Length'] = zip_io.tell()
     return response
 
 
-def ajax_handler(request, username, project_name, view_key, requested_url):
+def ajax_handler(request, username, project_slug, view_key, requested_url):
     if not request.is_ajax():
         raise Http404
 
-    project = get_project(username, project_name)
+    project = get_project(username, project_slug)
 
     if not check_view_permission(project, request.user, view_key):
         raise Http404
