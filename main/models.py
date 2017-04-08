@@ -124,3 +124,11 @@ class FeedItem(models.Model):
 
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+class OldLinks(models.Model):
+    name = models.CharField(max_length=100)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    is_public = models.BooleanField(default=False)
