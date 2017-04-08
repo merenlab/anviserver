@@ -127,8 +127,7 @@ class FeedItem(models.Model):
 
 class OldLinks(models.Model):
     name = models.CharField(max_length=100)
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.CharField(max_length=100)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
     is_public = models.BooleanField(default=False)
+    token = models.CharField(max_length=32)
