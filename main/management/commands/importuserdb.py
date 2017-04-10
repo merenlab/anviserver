@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.conf import settings
-from main.models import UserProfile, Project
+from main.models import UserProfile, Project, OldLinks, ProjectLink
 
 from anvio.utils import get_names_order_from_newick_tree
 from anvio import dbops
@@ -156,6 +156,22 @@ class Command(BaseCommand):
                 project.synchronize_num_collections()
 
                 project.save()
+
+                # try to migrate old links.
+                for row_links in conn.execute('SELECT * FROM views WHERE project LIKE \'%s\';' % (name)):
+                    old_link = OldLinks(
+                        name=row_links[0],
+                        user=sanitize_username(row_links[1]),
+                        project=Project.objects.filter(name=row_links[2], user__username=sanitize_username(row_links[1]))[0],
+                        is_public= True if row_links[3] == 1 else False,
+                        token=row_links[4])
+                    old_link.save()
+
+                    project_link = ProjectLink(
+                        project = old_link.project,
+                        link = old_link.token)
+                    project_link.save()
+
             except Exception as e:
                 print(username + " " + name + " " + path + " failed to create project, here is the exception " + str(e))
                 shutil.rmtree(os.path.join(settings.USER_DATA_DIR, username, path))
