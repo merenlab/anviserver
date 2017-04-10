@@ -18,3 +18,9 @@ class UserRegForm(RegistrationFormUniqueEmail):
             raise ValidationError("") # help text already contains required information
 
         return username
+
+
+class SettingsForm(forms.Form):
+    fullname = forms.CharField(max_length=100, required=False, label='Full name')
+    institution = forms.CharField(max_length=100, required=False)
+    orcid = forms.CharField(max_length=100, required=False, label='ORCID')

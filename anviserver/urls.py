@@ -3,15 +3,17 @@ from django.contrib import admin
 from registration.forms import RegistrationFormUniqueEmail
 from registration.backends.default.views import RegistrationView
 
-from main.views import projects, index, interactive, teams, profile, redirect
+from main.views import projects, index, interactive, teams, profile, redirect, settings
 from main.forms import UserRegForm
 from main import backend
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
+    url(r'^accounts/settings/$', settings.show_settings, name="user_settings"),
     url(r'^accounts/register/$', RegistrationView.as_view(form_class=UserRegForm), {'backend': 'registration.backends.default.DefaultBackend'}, name='registration_register'),
     url(r'^accounts/', include('registration.backends.default.urls')),
+
 
     url(r'^(?P<access_type>public|private)/(?P<username>\w+)/(?P<share_name>\w+)', redirect.redirect_view, name="redirect_view"),
 

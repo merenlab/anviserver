@@ -1,0 +1,18 @@
+{% extends "registration/registration_base.html" %}
+{% load bootstrap3 %}
+
+{% block title %}User Settings{% endblock %}
+
+{% block content %}
+
+{% if update_successfull %}
+<div class="alert alert-success">
+    Settings updated successfully, <a href="/">click here</a> to go home.
+</div>
+{% endif %}
+<form method="post" action="">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" class="btn btn-primary" value="Update" />
+</form>
+{% endblock %}
