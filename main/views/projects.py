@@ -12,6 +12,7 @@ from anvio.utils import get_names_order_from_newick_tree
 from anvio import dbops
 
 import shutil
+import re
 import os
 
 @login_required
@@ -170,9 +171,14 @@ def new_project(request):
                 # slug is not unique, so there is no project instance or direcotry created.
                 pass
 
+            message = str(e.clear_text()) if 'clear_text' in dir(e) else str(e)
+
+            # trim the full path from exception message, show only file name
+            message = re.sub(r"(\'.*\/)(.+?)(\.txt\')", r"'\2'", message)
+
             return JsonResponse({
                     'status': 1,
-                    'message': str(e.clear_text()) if 'clear_text' in dir(e) else str(e)
+                    'message': message
                     })
 
     return render(request, 'projects/new.html')
