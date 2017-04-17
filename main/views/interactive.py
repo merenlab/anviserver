@@ -6,7 +6,7 @@ from django.http import Http404, JsonResponse, HttpResponse
 from main.utils import get_project, check_view_permission, check_write_permission
 import main.utils as utils
 
-import anvio.bottleroutes as routes
+from anvio.bottleroutes import BottleApplication
 
 import zipfile
 import hashlib
@@ -58,31 +58,32 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
         raise Http404
 
     read_only = not check_write_permission(project, request.user)
-    
-    d = project.get_interactive(read_only=read_only)
 
     bottle_request = utils.MockBottleRequest(django_request=request)
     bottle_response = utils.MockBottleResponse()
 
+    interactive = project.get_interactive(read_only=read_only)
+    bottleapp = BottleApplication(interactive, interactive.args, bottle_request, bottle_response)
+
     if requested_url.startswith('data/init'):
         return JsonResponse({ "title": project.name,
-                             "description": (d.p_meta['description']),
-                             "clusterings": (d.p_meta['default_clustering'], d.p_meta['clusterings']),
-                             "views": (d.default_view, dict(list(zip(list(d.views.keys()), list(d.views.keys()))))),
-                             "contigLengths": dict([tuple((c, d.splits_basic_info[c]['length']),) for c in d.splits_basic_info]),
-                             "defaultView": d.views[d.default_view],
+                             "description": (interactive.p_meta['description']),
+                             "clusterings": (interactive.p_meta['default_clustering'], interactive.p_meta['clusterings']),
+                             "views": (interactive.default_view, dict(list(zip(list(interactive.views.keys()), list(interactive.views.keys()))))),
+                             "contigLengths": dict([tuple((c, interactive.splits_basic_info[c]['length']),) for c in interactive.splits_basic_info]),
+                             "defaultView": interactive.views[interactive.default_view],
                              "mode": 'server',
-                             "readOnly": d.read_only, 
+                             "readOnly": interactive.read_only, 
                              "binPrefix": "Bin_",
                              "sessionId": 0,
-                             "samplesOrder": d.samples_order_dict,
-                             "sampleInformation": d.samples_information_dict,
-                             "sampleInformationDefaultLayerOrder": d.samples_information_default_layer_order,
-                             "stateAutoload": d.state_autoload,
-                             "collectionAutoload": d.collection_autoload,
+                             "samplesOrder": interactive.samples_order_dict,
+                             "sampleInformation": interactive.samples_information_dict,
+                             "sampleInformationDefaultLayerOrder": interactive.samples_information_default_layer_order,
+                             "stateAutoload": interactive.state_autoload,
+                             "collectionAutoload": interactive.collection_autoload,
                              "noPing": True,
-                             "inspectionAvailable": d.auxiliary_profile_data_available,
-                             "sequencesAvailable": True if d.split_sequences else False,
+                             "inspectionAvailable": interactive.auxiliary_profile_data_available,
+                             "sequencesAvailable": True if interactive.split_sequences else False,
                              "project": {
                                 'username': project.user.username,
                                 'fullname': project.user.userprofile.fullname if project.user.userprofile.fullname else project.user.username
@@ -91,47 +92,47 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
 
     elif requested_url.startswith('data/view/'):
         param = requested_url.split('/')[-1]
-        return HttpResponse(routes.get_view_data(d, bottle_request, bottle_response, param), content_type='application/json')
+        return HttpResponse(bottleapp.get_view_data(param), content_type='application/json')
 
     elif requested_url.startswith('tree/'):
         param = requested_url.split('/')[-1]
-        return HttpResponse(routes.get_items_ordering(d, bottle_request, bottle_response, param), content_type='application/json')
+        return HttpResponse(bottleapp.get_items_ordering(param), content_type='application/json')
 
     elif requested_url.startswith('data/collections'):
-        return HttpResponse(routes.get_collections(d, bottle_request, bottle_response), content_type='application/json')
+        return HttpResponse(bottleapp.get_collections(), content_type='application/json')
 
     elif requested_url.startswith('data/collection/'):
         param = requested_url.split('/')[-1]
-        return HttpResponse(routes.get_collection_dict(d, bottle_request, bottle_response, param), content_type='application/json')
+        return HttpResponse(bottleapp.get_collection_dict(param), content_type='application/json')
 
     elif requested_url.startswith('store_collection'):
         if not check_write_permission(project, request.user):
             raise Http404
 
-        ret = HttpResponse(routes.store_collections_dict(d, bottle_request, bottle_response), content_type='application/json')
+        ret = HttpResponse(bottleapp.store_collections_dict(), content_type='application/json')
         project.synchronize_num_collections(save=True)
         return ret
 
     elif requested_url.startswith('data/contig/'):
         param = requested_url.split('/')[-1]
-        return HttpResponse(routes.get_sequence_for_split(d, bottle_request, bottle_response, param), content_type='application/json')
+        return HttpResponse(bottleapp.get_sequence_for_split(param), content_type='application/json')
 
     elif requested_url.startswith('store_description'):
         if not check_write_permission(project, request.user):
             raise Http404
 
-        return HttpResponse(routes.store_description(d, bottle_request, bottle_response), content_type='application/json')
+        return HttpResponse(bottleapp.store_description(), content_type='application/json')
 
     elif requested_url.startswith('state/all'):
-        return HttpResponse(routes.state_all(d, bottle_response), content_type='application/json')
+        return HttpResponse(bottleapp.state_all(), content_type='application/json')
 
     elif requested_url.startswith('state/get'):
-        return HttpResponse(routes.get_state(d, bottle_request, bottle_response), content_type='application/json')
+        return HttpResponse(bottleapp.get_state(), content_type='application/json')
 
     elif requested_url.startswith('state/save'):
         if not check_write_permission(project, request.user):
             raise Http404
 
-        ret = HttpResponse(routes.save_state(d, bottle_request, bottle_response), content_type='application/json')
+        ret = HttpResponse(bottleapp.save_state(), content_type='application/json')
         project.synchronize_num_states(save=True)
         return ret
