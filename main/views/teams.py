@@ -5,14 +5,16 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import Http404, JsonResponse
-from django.utils.text import slugify
+import re
 
 @login_required
 def list_teams(request):
     action = request.POST.get('action')
 
     if action == 'create_team':
-        name = slugify(request.POST.get('name')).replace('-', '_')
+        regex = re.compile('[^a-zA-Z0-9]')
+        name = regex.sub('', request.POST.get('name'))
+
         if len(name) > 0:
             team = Team(name=name, owner=request.user)
             team.save()
