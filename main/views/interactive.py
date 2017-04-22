@@ -127,12 +127,14 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
         return HttpResponse(bottleapp.state_all(), content_type='application/json')
 
     elif requested_url.startswith('state/get'):
-        return HttpResponse(bottleapp.get_state(), content_type='application/json')
+        param = requested_url.split('/')[-1]
+        return HttpResponse(bottleapp.get_state(param), content_type='application/json')
 
     elif requested_url.startswith('state/save'):
         if not check_write_permission(project, request.user):
             raise Http404
 
-        ret = HttpResponse(bottleapp.save_state(), content_type='application/json')
+        param = requested_url.split('/')[-1]
+        ret = HttpResponse(bottleapp.save_state(param), content_type='application/json')
         project.synchronize_num_states(save=True)
         return ret
