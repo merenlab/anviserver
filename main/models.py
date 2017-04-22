@@ -52,17 +52,26 @@ class Project(models.Model):
         os.makedirs(self.get_path())
 
     def get_interactive(self, read_only=True):
-        args = argparse.Namespace()
-        args.read_only = read_only
-        args.manual_mode = True
+        if self.get_file_path('contigs.db', default=None):
+            args = argparse.Namespace()
+            args.read_only = read_only
 
-        args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
-        args.tree                   = self.get_file_path('tree.txt'  , default=None)
-        args.view_data              = self.get_file_path('data.txt'  , default=None)
-        args.fasta_file             = self.get_file_path('fasta.fa'  , default=None)
-        args.samples_information_db = self.get_file_path('samples.db', default=None)
-        
-        return interactive.InputHandler(args)
+            args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
+            args.contigs_db             = self.get_file_path('contigs.db'  , default=None)
+
+            return interactive.InputHandler(args)
+        else:
+            args = argparse.Namespace()
+            args.read_only = read_only
+            args.manual_mode = True
+
+            args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
+            args.tree                   = self.get_file_path('tree.txt'  , default=None)
+            args.view_data              = self.get_file_path('data.txt'  , default=None)
+            args.fasta_file             = self.get_file_path('fasta.fa'  , default=None)
+            args.samples_information_db = self.get_file_path('samples.db', default=None)
+            
+            return interactive.InputHandler(args)
 
     def synchronize_num_states(self, save=False):
         self.num_states = len(self.get_interactive().states_table.states)
