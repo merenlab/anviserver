@@ -93,8 +93,9 @@ hr.separator {
 }
 
 .greeting {
-    background-image: url("/static/img/fractal.jpg");
-    padding: 20px;
+    background-color: #FAFAFA;
+    padding: 15px;
+    border: 1px solid #F0F0F0;
 }
 
 /*.carousel-inner > .item > img {
