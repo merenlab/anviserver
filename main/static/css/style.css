@@ -1,3 +1,7 @@
+.navbar-default {
+    background-image: url(/static/img/fractal.jpg);
+}
+
 .gravatar {
     display: inline-block;
     border-radius: 50%;
