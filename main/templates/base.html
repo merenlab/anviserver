@@ -36,7 +36,7 @@
                     <li class="{% if 'projects_new' in url_name %}active{% endif %}"><a href="{% url 'projects_new' %}">New Project</a></li>
                     <li class="{% if 'teams' in url_name %}active{% endif %}"><a href="{% url 'teams' %}">Teams{% if user.is_authenticated %} <span class="badge badge-nav ">{{ request.user.teamuser_set.all|length }}</span>{% endif %}</a></li>
                     {% endwith %}
-                    <li><a href="http://merenlab.org/2016/02/27/the-anvio-interactive-interface/">Help</a></li>
+                    <li><a href="http://merenlab.org/tutorials/interactive-interface/">Help</a></li>
                     <li><a href="http://merenlab.org/software/anvio/index.html">About Anvi'o</a></li>
                     <li><a href="http://merenlab.org/">About MerenLab</a></li>
                 </ul>
