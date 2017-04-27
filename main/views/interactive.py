@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.http import Http404, JsonResponse, HttpResponse
 
 from main.utils import get_project, check_view_permission, check_write_permission
+from main.templatetags.gravatar import gravatar
 import main.utils as utils
 
 from anvio.bottleroutes import BottleApplication
@@ -66,6 +67,10 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
     bottleapp = BottleApplication(interactive, interactive.args, bottle_request, bottle_response)
 
     if requested_url.startswith('data/init'):
+        download_zip_url = reverse('download_zip', args=[username, project_slug])
+        if view_key != 'no_view_key':
+            download_zip += '?view_key=' + view_key
+
         return JsonResponse({ "title": project.name,
                              "description": (interactive.p_meta['description']),
                              "clusterings": (interactive.p_meta['default_clustering'], interactive.p_meta['clusterings']),
@@ -86,7 +91,9 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
                              "sequencesAvailable": True if interactive.split_sequences else False,
                              "project": {
                                 'username': project.user.username,
-                                'fullname': project.user.userprofile.fullname if project.user.userprofile.fullname else project.user.username
+                                'fullname': project.user.userprofile.fullname if project.user.userprofile.fullname else project.user.username,
+                                'user_avatar': gravatar(project.user.email),
+                                'download_zip_url': download_zip_url
                                 }
                             })
 
