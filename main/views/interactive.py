@@ -69,7 +69,7 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
     if requested_url.startswith('data/init'):
         download_zip_url = reverse('download_zip', args=[username, project_slug])
         if view_key != 'no_view_key':
-            download_zip += '?view_key=' + view_key
+            download_zip_url += '?view_key=' + view_key
 
         return JsonResponse({ "title": project.name,
                              "description": (interactive.p_meta['description']),
