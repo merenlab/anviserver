@@ -97,6 +97,15 @@ hr.separator {
     border: 1px solid #F0F0F0;
 }
 
+.badge-new-project {
+    float: left;
+    background-color: white;
+    border: 1px solid black;
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+}
+
 /*.carousel-inner > .item > img {
   width:640px;
   height:360px;

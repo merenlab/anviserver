@@ -10,91 +10,99 @@
 <form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
     {% csrf_token %}
     <fieldset>
-        <div class="well">
-            <legend>Project Details</legend>
-            <div class="form-group">
-                <label class="control-label col-md-3" for="name">Name (*)</label>
-                <div class="col-md-9">
-                    <input class="form-control" id="name" maxlength="100" name="name" placeholder="Name" required="required" title="" type="text" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-3" for="description">Description</label>
-                <div class="col-md-9">
-                    <textarea class="form-control" id="description" maxlength="300" name="description" placeholder="Short description of the project, you can use Markdown syntax." title=""></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="well">
-            <legend>Essential Files</legend>
-            <div class="form-group">
-                <label class="control-label col-md-3" for="name">Order</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-primary btn-sm">
-                            Browse&hellip; <input type="file" style="display: none;" id="tree.txt" name="tree.txt"/>
-                        </span>
-                        </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" readonly value="Newick-formatted tree file, or comma-seperated file contains order of leaves." />
+        <div class="col-md-12">
+            <div class="well">
+                <legend>Project Details</legend>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="name">Name (*)</label>
+                    <div class="col-md-10">
+                        <input class="form-control" id="name" maxlength="100" name="name" placeholder="Name" required="required" title="" type="text" />
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-3" for="name">Data</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-primary btn-sm">
-                            Browse&hellip; <input type="file" style="display: none;" id="data.txt" name="data.txt" /></span>
-                        </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" readonly value="TAB-Delimited data file, where each row is leaf on tree and each column is data about leaves." />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-3" for="name">Fasta</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-primary btn-sm">
-                            Browse&hellip; <input type="file" style="display: none;" id="fasta.fa" name="fasta.fa" /></span>
-                        </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" readonly value="Fasta file contains sequence information for each leaf. If you provide fasta you can view sequences and do BLAST search." />
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="description">Description</label>
+                    <div class="col-md-10">
+                        <textarea class="form-control" id="description" maxlength="300" name="description" placeholder="Short description of the project, you can use Markdown syntax." title=""></textarea>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="well">
-            <legend>Additional Files</legend>
-            <div class="form-group">
-                <label class="control-label col-md-3" for="name">Samples Order</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-primary btn-sm">
-                                Browse&hellip; <input type="file" style="display: none;" id="samples-order.txt" name="samples-order.txt" /></span>
-                        </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" readonly value="TAB-Delimited samples order file." />
+        <div class="col-md-8">        
+            <div class="well">
+                <legend>Main Figure Files</legend>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="name"><span class="badge badge-new-project">1</span> Order</label>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary btn-sm">
+                                Browse&hellip; <input type="file" style="display: none;" id="tree.txt" name="tree.txt"/>
+                            </span>
+                            </label>
+                            <input type="text" class="form-control fileUploadTxt input-sm" readonly value="Newick-formatted tree file, or comma-seperated file contains order of leaves." />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="name"><span class="badge badge-new-project">2</span> Data</label>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary btn-sm">
+                                Browse&hellip; <input type="file" style="display: none;" id="data.txt" name="data.txt" /></span>
+                            </label>
+                            <input type="text" class="form-control fileUploadTxt input-sm" readonly value="TAB-Delimited data file, where each row is leaf on tree and each column is data about leaves." />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="name">Fasta</label>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary btn-sm">
+                                Browse&hellip; <input type="file" style="display: none;" id="fasta.fa" name="fasta.fa" /></span>
+                            </label>
+                            <input type="text" class="form-control fileUploadTxt input-sm" readonly value="Fasta file contains sequence information for each leaf. If you provide fasta you can view sequences and do BLAST search." />
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="control-label col-md-3" for="name">Samples Info</label>
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <label class="input-group-btn">
-                            <span class="btn btn-primary btn-sm">
-                                Browse&hellip; <input type="file" style="display: none;" id="samples-info.txt" name="samples-info.txt" /></span>
-                        </label>
-                        <input type="text" class="form-control fileUploadTxt input-sm" readonly value="TAB-Delimited samples information file." />
+            <div class="well">
+                <legend>Sample Files</legend>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="name"><span class="badge badge-new-project">3</span> Order</label>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary btn-sm">
+                                    Browse&hellip; <input type="file" style="display: none;" id="samples-order.txt" name="samples-order.txt" /></span>
+                            </label>
+                            <input type="text" class="form-control fileUploadTxt input-sm" readonly value="TAB-Delimited samples order file." />
+                        </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="name"><span class="badge badge-new-project">4</span> Info</label>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary btn-sm">
+                                    Browse&hellip; <input type="file" style="display: none;" id="samples-info.txt" name="samples-info.txt" /></span>
+                            </label>
+                            <input type="text" class="form-control fileUploadTxt input-sm" readonly value="TAB-Delimited samples information file." />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="well">
+                <img src="/static/img/example.png" style="width: 100%;" />
             </div>
         </div>
     </fieldset>
     <div class="alert alert-danger" id="error_box" style="display: none;">
-
     </div>
     <input type="submit" value="Create project" class="btn btn-primary btn-lg" />
 </form>
@@ -111,7 +119,9 @@
     </div>
 </div>
 <script>
-var simplemde = new SimpleMDE({ element: document.getElementById("description") });
+var simplemde = new SimpleMDE({
+    element: document.getElementById("description")
+});
 </script>
 {% endblock %} {% block header %} {% load staticfiles %}
 <script src="{% static 'js/jquery.form.js' %}"></script>
