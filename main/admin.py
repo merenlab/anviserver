@@ -18,6 +18,7 @@ class UserProfileInline(admin.StackedInline):
     model = UserProfile
 
 class UserProfileAdmin(UserAdmin):
+    UserAdmin.list_display = ('email', 'is_active', 'date_joined', 'is_staff')
     inlines = [ UserProfileInline, ]
 
 admin.site.register(User, UserProfileAdmin)
