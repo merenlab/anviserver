@@ -59,7 +59,7 @@ class Project(models.Model):
             args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
             args.contigs_db             = self.get_file_path('contigs.db'  , default=None)
 
-            return interactive.InputHandler(args)
+            return interactive.Interactive(args)
         else:
             args = argparse.Namespace()
             args.read_only = read_only
@@ -71,7 +71,7 @@ class Project(models.Model):
             args.fasta_file             = self.get_file_path('fasta.fa'  , default=None)
             args.samples_information_db = self.get_file_path('samples.db', default=None)
             
-            return interactive.InputHandler(args)
+            return interactive.Interactive(args)
 
     def synchronize_num_states(self, save=False):
         self.num_states = len(self.get_interactive().states_table.states)
