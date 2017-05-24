@@ -145,3 +145,11 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
         ret = HttpResponse(bottleapp.save_state(param), content_type='application/json')
         project.synchronize_num_states(save=True)
         return ret
+
+    elif requested_url.startswith('data/charts/'):
+        param = requested_url.split('/')[-1]
+        return HttpResponse(bottleapp.charts(param), content_type='application/json')
+
+    elif requested_url.startswith('data/news'):
+        return HttpResponse(bottleapp.get_news(), content_type='application/json')
+
