@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.crypto import get_random_string
 from django.utils.text import slugify
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 from main.models import Project, Team, TeamUser, ProjectTeam, ProjectLink
 from django.contrib.auth.models import Permission, User
@@ -25,6 +25,8 @@ def list_projects(request):
         if project:
             project.delete_project_path()
             project.delete()
+        else:
+            raise Http404
 
     context = {
         'projects': Project.objects.filter(user=request.user),
