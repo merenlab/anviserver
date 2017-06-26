@@ -55,6 +55,7 @@ class Project(models.Model):
         if self.get_file_path('contigs.db', default=None):
             args = argparse.Namespace()
             args.read_only = read_only
+            args.hide_outlier_SNVs = False
 
             args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
             args.contigs_db             = self.get_file_path('contigs.db'  , default=None)

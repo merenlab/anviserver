@@ -27,6 +27,17 @@ def show_interactive(request, username, project_slug):
 
     return render(request, 'interactive.html', {'project': project, 'view_key': view_key})
 
+def show_inspect(request, username, project_slug, item_name):
+    project = get_project(username, project_slug)
+
+    view_key = request.GET.get('view_key')
+    if view_key is None:
+        view_key = "no_view_key"
+
+    if not check_view_permission(project, request.user, view_key):
+        raise Http404
+
+    return render(request, 'charts.html', {'project': project, 'view_key': view_key, 'item_name': item_name })
 
 def download_zip(request, username, project_slug):
     project = get_project(username, project_slug)
