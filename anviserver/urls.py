@@ -28,7 +28,7 @@ urlpatterns = [
 
     url(r'^ajax/(?P<username>\w+)/(?P<project_slug>\w+)/(?P<view_key>\w+)/(?P<requested_url>.*)', interactive.ajax_handler),
     url(r'^(?P<username>\w+)/(?P<project_slug>\w+)/download', interactive.download_zip, name="download_zip"),
-    url(r'^(?P<username>\w+)/(?P<project_slug>\w+)/inspect', interactive.show_inspect, name="show_inspect"),
+    url(r'^(?P<username>\w+)/(?P<project_slug>\w+)/(?P<inspection_type>\w+)', interactive.show_inspect, name="show_inspect"),
     url(r'^(?P<username>\w+)/(?P<project_slug>\w+)', interactive.show_interactive, name="show_interactive"),
 
     url(r'^(?P<username>\w+)', profile.show_user_profile, name="user_profile"),

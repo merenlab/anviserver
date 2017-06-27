@@ -16,6 +16,6 @@
 		<link rel="icon" type="image/png" href="{% static 'img/logo.png' %}"> 
 	</head>
 	<body>
-		<iframe src="/static/interactive/charts.html?request_prefix=/ajax/{{project.user.username}}/{{project.slug}}/{{ view_key }}&id={{ id }}"></iframe>
+		<iframe src="/static/interactive/{{ html_page }}.html?request_prefix=/ajax/{{project.user.username}}/{{project.slug}}/{{ view_key }}&id={{ id }}"></iframe>
 	</body>
 </html>

@@ -27,7 +27,7 @@ def show_interactive(request, username, project_slug):
 
     return render(request, 'interactive.html', {'project': project, 'view_key': view_key})
 
-def show_inspect(request, username, project_slug):
+def show_inspect(request, username, project_slug, inspection_type):
     project = get_project(username, project_slug)
 
     view_key = request.GET.get('view_key')
@@ -37,7 +37,17 @@ def show_inspect(request, username, project_slug):
     if not check_view_permission(project, request.user, view_key):
         raise Http404
 
-    return render(request, 'charts.html', {'project': project, 'view_key': view_key, 'id': request.GET.get('id') })
+    html_page = ''
+    if inspection_type == 'inspect':
+        html_page = 'charts'
+    elif inspection_type == 'proteinclusters':
+        html_page = 'proteinclusters'
+
+    return render(request, 'inspect.html', {'project': project, 
+                                           'view_key': view_key,
+                                           'id': request.GET.get('id'),
+                                           'html_page': html_page
+                                           })
 
 def download_zip(request, username, project_slug):
     project = get_project(username, project_slug)
