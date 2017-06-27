@@ -3,7 +3,7 @@
 <html lang="en">
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<title>Inspect '{{ item_name }}' - {{ project.name }} - Anvi'o Server</title>
+		<title>'{{ id }}' detailed - {{ project.name }} - Anvi'o Server</title>
 		<style>
 			html, body, iframe {
 				margin: 0px;
@@ -16,6 +16,6 @@
 		<link rel="icon" type="image/png" href="{% static 'img/logo.png' %}"> 
 	</head>
 	<body>
-		<iframe src="/static/interactive/charts.html?request_prefix=/ajax/{{project.user.username}}/{{project.slug}}/{{ view_key }}&id={{ item_name }}"></iframe>
+		<iframe src="/static/interactive/charts.html?request_prefix=/ajax/{{project.user.username}}/{{project.slug}}/{{ view_key }}&id={{ id }}"></iframe>
 	</body>
 </html>
