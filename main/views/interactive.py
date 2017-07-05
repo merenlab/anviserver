@@ -174,3 +174,7 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
     elif requested_url.startswith('data/news'):
         return HttpResponse(bottleapp.get_news(), content_type='application/json')
 
+    elif requested_url.startswith('/data/gene'):
+        param = requested_url.split('/')[-1]
+        return HttpResponse(bottleapp.get_sequence_for_gene_call(param), content_type='application/json')
+
