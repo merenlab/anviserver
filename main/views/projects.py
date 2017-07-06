@@ -12,6 +12,7 @@ from anvio.utils import get_names_order_from_newick_tree
 from anvio import dbops
 
 import shutil
+import datetime
 import re
 import os
 
@@ -147,6 +148,11 @@ def new_project(request):
                 s.create(samples_order, samples_info)
 
             interactive = project.get_interactive()
+
+            state_file = project.get_file_path('state.json', default=None)
+            if state_file:
+                interactive.states_table.store_state('default', open(state_file, 'r').read(), datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
+                project.num_states = 1
 
             # try to get number of leaves
             try:
