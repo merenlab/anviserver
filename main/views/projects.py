@@ -124,8 +124,13 @@ def new_project(request):
             name = request.POST.get('name')
             slug = slugify(name).replace('-', '_')
 
-            if Project.objects.filter(user=request.user, slug=slug):
-                raise Exception("Project with same name already exists, please give another name.")
+            project = Project.objects.filter(user=request.user, slug=slug)
+            if project:
+                if request.POST.get('delete-if-exists'):
+                    project[0].delete_project_path()
+                    project[0].delete()
+                else:
+                    raise Exception("Project with same name already exists, please give another name.")
 
             project = Project(name=name,
                               slug=slug,
