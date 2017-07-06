@@ -71,6 +71,7 @@ class Project(models.Model):
             args.view_data              = self.get_file_path('data.txt'  , default=None)
             args.fasta_file             = self.get_file_path('fasta.fa'  , default=None)
             args.samples_information_db = self.get_file_path('samples.db', default=None)
+            args.additional_layers      = self.get_file_path('additional-layers.txt', default=None)
             
             return interactive.Interactive(args)
 

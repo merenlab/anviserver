@@ -133,7 +133,7 @@ def new_project(request):
 
             project.create_project_path()
 
-            fileTypes = ['tree.txt', 'data.txt', 'fasta.fa', 'samples-order.txt', 'samples-info.txt']
+            fileTypes = ['tree.txt', 'data.txt', 'fasta.fa', 'samples-order.txt', 'samples-info.txt', 'additional-layers.txt', 'state.json']
 
             for fileType in fileTypes:
                 if fileType in request.FILES:
