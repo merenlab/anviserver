@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import url, include, handler400, handler403, handler404, handler500
 from django.contrib import admin
 from registration.forms import RegistrationFormUniqueEmail
 from registration.backends.default.views import RegistrationView
@@ -35,3 +35,8 @@ urlpatterns = [
 
     url(r'^$', index.show_index, name='index'),
 ]
+
+handler400 = index.show_error_page
+handler403 = index.show_error_page
+handler404 = index.show_error_page
+handler500 = index.show_error_page

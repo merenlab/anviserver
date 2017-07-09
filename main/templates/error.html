@@ -1,0 +1,27 @@
+{% load gravatar %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <title>anvi'o server</title>
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,700' rel='stylesheet' type='text/css' />
+</head>
+
+<body>
+    <center>
+        <br />
+        <br />
+        <img width="400px" src="{% static 'img/cat.jpg' %}" />
+        <br />
+        <br />
+        <span style="font-size: 32px; font-family: Lato">Something went wrong</span><br /><br />
+        <span style="font-size: 18px; font-family: Lato">It seems you don’t have permission to view this page or this page does not exists at all.<br><br>Please send <a href="http://merenlab.org/people/">us</a> an e-mail if you think this is a mistake.</span>
+        <br><br><br><br>
+        <span style="font-size: 18px; font-family: Lato"><a href="#" onclick="window.history.back();">Go Back</a></span>
+    </center>
+</body>
+
+</html>
