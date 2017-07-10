@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import raven
 from anviserver import settings_secrets
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -32,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'raven.contrib.django.raven_compat',
     'main',
     'registration', # should be right above auth
     'django.contrib.admin',
@@ -142,3 +144,9 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Site Settings
 SITE_ID = 1
+
+# Sentry settings
+RAVEN_CONFIG = {
+    'dsn': settings_secrets.RAVEN_DSN,
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}
