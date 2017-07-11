@@ -14,11 +14,12 @@ def check_view_permission(project, user, view_key):
     if ProjectLink.objects.filter(project=project, link=view_key):
         return True
 
-    project_teams = set(Team.objects.filter(projectteam__project=project).values_list('id', flat=True))
-    user_teams = set(Team.objects.filter(teamuser__user=user).values_list('id', flat=True))
+    if not user.is_anonymous():
+        project_teams = set(Team.objects.filter(projectteam__project=project).values_list('id', flat=True))
+        user_teams = set(Team.objects.filter(teamuser__user=user).values_list('id', flat=True))
 
-    if len(project_teams & user_teams) > 0:
-        return True
+        if len(project_teams & user_teams) > 0:
+            return True
 
     return False
 
