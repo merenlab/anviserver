@@ -124,6 +124,9 @@ def new_project(request):
             name = request.POST.get('name')
             slug = slugify(name).replace('-', '_')
 
+            if len(slug) < 1:
+                raise Exception("Project name should not be empty.")
+
             project = Project.objects.filter(user=request.user, slug=slug)
             if project:
                 if request.POST.get('delete-if-exists'):
