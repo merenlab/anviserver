@@ -8,7 +8,7 @@ from main.models import Project, Team, TeamUser, ProjectTeam, ProjectLink
 from django.contrib.auth.models import Permission, User
 
 from main.utils import get_project, put_project_file
-from anvio.utils import get_names_order_from_newick_tree
+from anvio.utils import get_names_order_from_newick_tree, get_TAB_delimited_file_as_dictionary
 from anvio import dbops
 
 import shutil
@@ -168,8 +168,21 @@ def new_project(request):
             bins_file = project.get_file_path('bins.txt', default=None)
             bins_info_file = project.get_file_path('bins-info.txt', default=None)
             if bins_file and bins_info_file:
-                dbops.TablesForCollections(project.get_file_path('profile.db', default=None)).append('default', bins_file, bins_info_file)
-                projet.num_collections = 1
+                collections = dbops.TablesForCollections(project.get_file_path('profile.db', default=None))
+
+                bins = get_TAB_delimited_file_as_dictionary(bins_file, no_header = True, column_names = ['split_id', 'bin_name'])
+                bins_info = get_TAB_delimited_file_as_dictionary(bins_info_file, no_header = True, column_names = ['bin_name', 'source', 'html_color'])
+
+                bin_data = {}
+                for split_name in bins:
+                    bin_name = bins[split_name]['bin_name']
+                    if not bin_name in bin_data:
+                        bin_data[bin_name] = set([])
+
+                    bin_data[bin_name].add(split_name)
+
+                collections.append('default', bin_data, bins_info)
+                project.num_collections = 1
 
             # try to get number of leaves
             try:
