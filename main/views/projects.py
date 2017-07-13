@@ -142,7 +142,10 @@ def new_project(request):
 
             project.create_project_path()
 
-            fileTypes = ['tree.txt', 'data.txt', 'fasta.fa', 'samples-order.txt', 'samples-info.txt', 'additional-layers.txt', 'state.json']
+            fileTypes = ['tree.txt', 'data.txt', 'fasta.fa', 
+                         'samples-order.txt', 'samples-info.txt',
+                         'additional-layers.txt', 'state.json', 
+                         'bins.txt', 'bins-info.txt']
 
             for fileType in fileTypes:
                 if fileType in request.FILES:
@@ -161,6 +164,12 @@ def new_project(request):
             if state_file:
                 interactive.states_table.store_state('default', open(state_file, 'r').read(), datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
                 project.num_states = 1
+
+            bins_file = project.get_file_path('bins.txt', default=None)
+            bins_info_file = project.get_file_path('bins-info.txt', default=None)
+            if bins_file and bins_info_file:
+                dbops.TablesForCollections(project.get_file_path('profile.db', default=None)).append('default', bins_file, bins_info_file)
+                projet.num_collections = 1
 
             # try to get number of leaves
             try:
