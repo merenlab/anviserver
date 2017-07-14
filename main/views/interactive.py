@@ -176,6 +176,10 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
         param = requested_url.split('/')[-1]
         return HttpResponse(bottleapp.inspect_pc(param), content_type='application/json')
 
+    elif requested_url.startswith('data/get_AA_sequences_for_PC/'):
+        param = requested_url.split('/')[-1]
+        return HttpResponse(bottleapp.get_AA_sequences_for_PC(param), content_type='application/json')
+
     elif requested_url.startswith('data/news'):
         return HttpResponse(bottleapp.get_news(), content_type='application/json')
 
