@@ -52,20 +52,21 @@ class Project(models.Model):
         os.makedirs(self.get_path())
 
     def get_interactive(self, read_only=True):
-        if self.get_file_path('contigs.db', default=None):
-            args = argparse.Namespace()
-            args.read_only = read_only
-            args.hide_outlier_SNVs = False
+        args = argparse.Namespace()
+        args.read_only = read_only
 
+        if self.get_file_path('pan.db', default=None):
+            args.mode = 'pan'
+            args.pan_db                 = self.get_file_path('pan.db', dont_check_exists=True)
+            args.genomes_storage        = self.get_file_path('genomes.h5', default=None)
+            args.samples_information_db = self.get_file_path('samples.db', default=None)
+        elif self.get_file_path('contigs.db', default=None):
+            args.hide_outlier_SNVs = False
             args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
             args.contigs_db             = self.get_file_path('contigs.db'  , default=None)
-
-            return interactive.Interactive(args)
+            args.samples_information_db = self.get_file_path('samples.db', default=None)
         else:
-            args = argparse.Namespace()
-            args.read_only = read_only
             args.manual_mode = True
-
             args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
             args.tree                   = self.get_file_path('tree.txt'  , default=None)
             args.view_data              = self.get_file_path('data.txt'  , default=None)
@@ -73,7 +74,7 @@ class Project(models.Model):
             args.samples_information_db = self.get_file_path('samples.db', default=None)
             args.additional_layers      = self.get_file_path('additional-layers.txt', default=None)
             
-            return interactive.Interactive(args)
+        return interactive.Interactive(args)
 
     def synchronize_num_states(self, save=False):
         self.num_states = len(self.get_interactive().states_table.states)
