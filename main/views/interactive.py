@@ -98,7 +98,8 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
                              "views": (interactive.default_view, dict(list(zip(list(interactive.views.keys()), list(interactive.views.keys()))))),
                              "contigLengths": dict([tuple((c, interactive.splits_basic_info[c]['length']),) for c in interactive.splits_basic_info]),
                              "defaultView": interactive.views[interactive.default_view],
-                             "mode": 'server',
+                             "server_mode": True,
+                             "mode": interactive.mode,
                              "readOnly": interactive.read_only, 
                              "binPrefix": "Bin_",
                              "sessionId": 0,
@@ -170,6 +171,10 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
     elif requested_url.startswith('data/charts/'):
         param = requested_url.split('/')[-1]
         return HttpResponse(bottleapp.charts(param), content_type='application/json')
+
+    elif requested_url.startswith('data/proteinclusters/'):
+        param = requested_url.split('/')[-1]
+        return HttpResponse(bottleapp.inspect_pc(param), content_type='application/json')
 
     elif requested_url.startswith('data/news'):
         return HttpResponse(bottleapp.get_news(), content_type='application/json')
