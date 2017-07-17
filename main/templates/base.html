@@ -1,4 +1,5 @@
 {% load gravatar %}
+{% load analytics %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -82,6 +83,7 @@
         }
     });
 </script>
+{% analytics_script_block %}
 </body>
 
 </html>

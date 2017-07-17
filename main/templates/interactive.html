@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load analytics %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 	<head>
@@ -17,5 +18,6 @@
 	</head>
 	<body>
 		<iframe src="/static/interactive/index.html?request_prefix=/ajax/{{project.user.username}}/{{project.slug}}/{{ view_key }}"></iframe>
+	{% analytics_script_block %}
 	</body>
 </html>
