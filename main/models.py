@@ -51,6 +51,9 @@ class Project(models.Model):
     def create_project_path(self):
         os.makedirs(self.get_path())
 
+    def get_description(self):
+        return self.get_interactive().p_meta['description']
+
     def get_interactive(self, read_only=True):
         args = argparse.Namespace()
         args.read_only = read_only
