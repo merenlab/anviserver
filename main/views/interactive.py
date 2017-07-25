@@ -187,3 +187,6 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
         param = requested_url.split('/')[-1]
         return HttpResponse(bottleapp.get_sequence_for_gene_call(param), content_type='application/json')
 
+    elif requested_url.startswith('data/completeness'):
+        return HttpResponse(bottleapp.completeness(), content_type='application/json')
+
