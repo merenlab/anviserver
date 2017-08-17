@@ -69,10 +69,11 @@ class Project(models.Model):
             args.contigs_db             = self.get_file_path('contigs.db'  , default=None)
         else:
             args.manual_mode = True
-            args.profile_db             = self.get_file_path('profile.db', dont_check_exists=True)
-            args.tree                   = self.get_file_path('tree.txt'  , default=None)
-            args.view_data              = self.get_file_path('data.txt'  , default=None)
-            args.fasta_file             = self.get_file_path('fasta.fa'  , default=None)
+            args.profile_db             = self.get_file_path('profile.db'     , dont_check_exists=True)
+            args.tree                   = self.get_file_path('tree.txt'       , default=None)
+            args.items_order            = self.get_file_path('items-order.txt', default=None)
+            args.view_data              = self.get_file_path('data.txt'       , default=None)
+            args.fasta_file             = self.get_file_path('fasta.fa'       , default=None)
         
         args.samples_information_db = self.get_file_path('samples.db', default=None)
         args.additional_layers      = self.get_file_path('additional-layers.txt', default=None)
