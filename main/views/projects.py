@@ -186,7 +186,7 @@ def new_project(request):
 
             # try to get number of leaves
             try:
-                project.num_leaves = interactive.displayed_item_names_ordered
+                project.num_leaves = len(interactive.displayed_item_names_ordered)
             except:
                 project.num_leaves = 0
 
