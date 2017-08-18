@@ -8,7 +8,7 @@ from main.models import Project, Team, TeamUser, ProjectTeam, ProjectLink
 from django.contrib.auth.models import Permission, User
 
 from main.utils import get_project, put_project_file
-from anvio.utils import get_names_order_from_newick_tree, get_TAB_delimited_file_as_dictionary
+from anvio.utils import get_TAB_delimited_file_as_dictionary
 from anvio import dbops
 
 import shutil
@@ -186,8 +186,7 @@ def new_project(request):
 
             # try to get number of leaves
             try:
-                leaves = get_names_order_from_newick_tree(project.get_file_path('tree.txt', default=None))
-                project.num_leaves = len(leaves) if leaves != [''] else 0
+                project.num_leaves = interactive.displayed_item_names_ordered
             except:
                 project.num_leaves = 0
 
