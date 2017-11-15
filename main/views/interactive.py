@@ -94,7 +94,7 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
 
         return JsonResponse({ "title": project.name,
                              "description": (interactive.p_meta['description']),
-                             "item_orders": (self.interactive.p_meta['default_item_order'], self.interactive.p_meta['item_orders']),
+                             "item_orders": (interactive.p_meta['default_item_order'], interactive.p_meta['item_orders']),
                              "views": (interactive.default_view, dict(list(zip(list(interactive.views.keys()), list(interactive.views.keys()))))),
                              "contigLengths": dict([tuple((c, interactive.splits_basic_info[c]['length']),) for c in interactive.splits_basic_info]),
                              "defaultView": interactive.views[interactive.default_view],
