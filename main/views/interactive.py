@@ -125,7 +125,7 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
 
     elif requested_url.startswith('tree/'):
         param = requested_url.split('/')[-1]
-        return HttpResponse(bottleapp.get_items_ordering(param), content_type='application/json')
+        return HttpResponse(bottleapp.get_items_order(param), content_type='application/json')
 
     elif requested_url.startswith('data/collections'):
         return HttpResponse(bottleapp.get_collections(), content_type='application/json')
