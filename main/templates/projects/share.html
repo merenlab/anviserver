@@ -5,14 +5,14 @@
 <div class="col-md-12">
     <div class="well">
         <form class="form-horizontal" action="#" onsubmit="return false;">
-            <legend>Basic Sharing</legend>
+            <legend>Share this project publicly or privately</legend>
             <div class="form-group">
-                <label class="control-label col-md-3" for="name">Make project public</label>
+                <label class="control-label col-md-3" for="name">Make the project public</label>
                 <div class="col-md-9">
                     <div class="input-group">
                          <input type="checkbox" {% if project.is_public %}checked{% endif %} data-toggle="toggle" data-size="mini" data-onstyle="success" onChange="set_public($(this).prop('checked'));" data-offstyle="danger">
-                         <div class="alert alert-info alert-small" role="alert">Public projects will be listed on your public profile and can be viewed for everyone.</div>
-                         <div class="public-links" style="{% if project.is_public %}checked{% endif %}display: none" role="alert">This public project can be shared using <a href="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.slug %}">{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.slug %}</a> or <a href="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'short_link_redirect' project.short_link_key %}">{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'short_link_redirect' project.short_link_key %}</a></div>
+                         <div class="alert alert-info alert-small" role="alert">Public projects will be listed on your public profile, and they will be accessible to everyone in read-only mode.</div>
+                         <div class="public-links" style="{% if project.is_public %}checked{% endif %}display: none" role="alert">The following URLs provide public access to this project (the shortened version may be more suitable for publications): <a href="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.slug %}">{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'show_interactive' project.user.username project.slug %}</a> or <a href="{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'short_link_redirect' project.short_link_key %}">{% if request.is_secure %}http://{% else %}http://{% endif %}{{ request.get_host }}{% url 'short_link_redirect' project.short_link_key %}</a></div>
                     </div>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th class="col-md-8">Link</th>
+                                <th class="col-md-8">URL</th>
                                 <th class="col-md-3">Created at</th>
                                 <th class="col-md-1">Delete</th>
                             </tr>
@@ -48,12 +48,12 @@
                         </tbody>
                     </table>
                     {% else %}
-                        <div class="alert alert-info alert-small" role="alert">You have not generated any private sharing link.</div>
+                        <div class="alert alert-info alert-small" role="alert">You have not generated any URLs for private access.</div>
                     {% endif %}
                     {% endwith %}
                     <div class="input-group">
                         <span class="input-group-btn">
-                            <button class="btn btn-primary btn-sm" type="button" onclick="generate_link()"><span class="glyphicon glyphicon-refresh"></span> Generate new link</button>
+                            <button class="btn btn-primary btn-sm" type="button" onclick="generate_link()"><span class="glyphicon glyphicon-refresh"></span> Generate new URL</button>
                         </span>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
 <div class="col-md-12">
     <div class="well">
         <form class="form-horizontal" action="#" onsubmit="share_with_team(); return false;">
-            <legend>Share with your teams</legend>
+            <legend>Share this project with your teams</legend>
             <div id="shared_team_list_container">
                  {% if shared_teams %}
                 <table class="table table-hover">
@@ -93,7 +93,7 @@
                 </table>
                 {% else %}
                 <div class="alert alert-info">
-                    <small>You have not made this project available to any team.</small>
+                    <small>You have not made this project accessible to any team.</small>
                 </div>
                 {% endif %}
             </div>
