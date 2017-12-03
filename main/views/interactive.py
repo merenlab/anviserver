@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 
 from main.utils import get_project, check_view_permission, check_write_permission
+from main.models import Project
 from main.templatetags.gravatar import gravatar
 import main.utils as utils
 
