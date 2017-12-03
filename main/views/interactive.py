@@ -23,7 +23,7 @@ def short_link_redirect(request, short_link_key):
     if not project.is_public:
         raise Http404
 
-    redirect('show_interactive', username=project.user.name, slug=project.slug)
+    redirect('show_interactive', username=project.user.username, slug=project.slug)
 
 
 def show_interactive(request, username, project_slug):
