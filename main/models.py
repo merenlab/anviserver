@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Permission, User
+from django.utils.crypto import get_random_string
 from django.db import models
 from django.conf import settings
 
@@ -20,6 +21,7 @@ class Project(models.Model):
     slug = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
     secret = models.CharField(max_length=64)
+    short_link_key = models.CharField(max_length=32, default=get_random_string(length=6))
     created_at = models.DateTimeField(auto_now_add=True)
 
     num_leaves = models.IntegerField(default=0)

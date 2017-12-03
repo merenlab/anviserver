@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 
 from main.utils import get_project, check_view_permission, check_write_permission
@@ -14,6 +14,16 @@ import hashlib
 import json
 import os
 import io
+
+
+def short_link_redirect(request, short_link_key):
+    project = get_object_or_404(Project, short_link_key=short_link_key)
+
+    if project.is_public:
+        raise Http404
+
+    redirect('show_interactive', username=project.user.name, slug=project.slug)
+
 
 def show_interactive(request, username, project_slug):
     project = get_project(username, project_slug)
