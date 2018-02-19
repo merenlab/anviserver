@@ -3,7 +3,7 @@ from django.utils.crypto import get_random_string
 from django.db import models
 from django.conf import settings
 
-from anvio.dbops import ProfileDatabase, TablesForCollections, TablesForStates, update_description_in_db
+from anvio.dbops import ProfileDatabase, update_description_in_db
 from anvio.ccollections import Collections
 from anvio import interactive
 
