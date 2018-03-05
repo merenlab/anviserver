@@ -1,20 +1,22 @@
+import os
+import re
+import shutil
+import argparse
+import datetime
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Permission, User
 from django.utils.crypto import get_random_string
 from django.utils.text import slugify
 from django.shortcuts import render
 from django.http import JsonResponse, Http404
 
 from main.models import Project, Team, TeamUser, ProjectTeam, ProjectLink
-from django.contrib.auth.models import Permission, User
-
 from main.utils import get_project, put_project_file
-from anvio.utils import get_TAB_delimited_file_as_dictionary
-from anvio import dbops
 
-import shutil
-import datetime
-import re
-import os
+from anvio import dbops
+from anvio.tables import miscdata
+from anvio.utils import get_TAB_delimited_file_as_dictionary
 
 @login_required
 def list_projects(request):
@@ -151,14 +153,17 @@ def new_project(request):
                 if fileType in request.FILES:
                     put_project_file(project.get_path(), fileType, request.FILES[fileType])
 
-            samples_info = project.get_file_path('samples-order.txt', default=None)
-            samples_order = project.get_file_path('samples-info.txt', default=None)
-            
-            if samples_info or samples_order:
-                s = dbops.SamplesInformationDatabase(project.get_file_path('samples.db', dont_check_exists=True), quiet=True)
-                s.create(samples_order, samples_info)
-
             interactive = project.get_interactive()
+            profile_db_path = project.get_file_path('profile.db', default=None)
+
+            samples_info = project.get_file_path('samples-info.txt', default=None)
+            if samples_info:
+                miscdata.MiscDataTableFactory(argparse.Namespace(target_data_table='layers', profile_db=profile_db_path)).populate_from_file(samples_info)
+
+            samples_order = project.get_file_path('samples-order.txt', default=None)
+            if samples_order:
+                miscdata.MiscDataTableFactory(argparse.Namespace(target_data_table='layer_orders', profile_db=profile_db_path)).populate_from_file(samples_order)
+
 
             state_file = project.get_file_path('state.json', default=None)
             if state_file:
@@ -168,7 +173,7 @@ def new_project(request):
             bins_file = project.get_file_path('bins.txt', default=None)
             bins_info_file = project.get_file_path('bins-info.txt', default=None)
             if bins_file and bins_info_file:
-                collections = dbops.TablesForCollections(project.get_file_path('profile.db', default=None))
+                collections = dbops.TablesForCollections(profile_db_path)
 
                 bins = get_TAB_delimited_file_as_dictionary(bins_file, no_header = True, column_names = ['split_id', 'bin_name'])
                 bins_info = get_TAB_delimited_file_as_dictionary(bins_info_file, no_header = True, column_names = ['bin_name', 'source', 'html_color'])
@@ -197,7 +202,7 @@ def new_project(request):
                 project.num_layers = 0
 
             # store description
-            dbops.update_description_in_db(project.get_file_path('profile.db', default=None), request.POST.get('description') or '')
+            dbops.update_description_in_db(profile_db_path, request.POST.get('description') or '')
 
             project.save()
             return JsonResponse({'status': 0})
