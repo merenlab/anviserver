@@ -189,9 +189,9 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
         item_name = requested_url.split('/')[-1]
         return HttpResponse(bottleapp.inspect_gene_cluster(order_name, item_name), content_type='application/json')
 
-    elif requested_url.startswith('data/get_AA_sequences_for_PC/'):
+    elif requested_url.startswith('data/get_AA_sequences_for_gene_cluster/'):
         param = requested_url.split('/')[-1]
-        return HttpResponse(bottleapp.get_AA_sequences_for_PC(param), content_type='application/json')
+        return HttpResponse(bottleapp.get_AA_sequences_for_gene_cluster(param), content_type='application/json')
 
     elif requested_url.startswith('data/news'):
         return HttpResponse(bottleapp.get_news(), content_type='application/json')
