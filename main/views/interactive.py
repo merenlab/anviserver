@@ -180,12 +180,14 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
         return ret
 
     elif requested_url.startswith('data/charts/'):
-        param = requested_url.split('/')[-1]
-        return HttpResponse(bottleapp.charts(param), content_type='application/json')
+        order_name = requested_url.split('/')[-2]
+        item_name = requested_url.split('/')[-1]
+        return HttpResponse(bottleapp.charts(order_name, item_name), content_type='application/json')
 
-    elif requested_url.startswith('data/proteinclusters/'):
-        param = requested_url.split('/')[-1]
-        return HttpResponse(bottleapp.inspect_pc(param), content_type='application/json')
+    elif requested_url.startswith('data/geneclusters/'):
+        order_name = requested_url.split('/')[-2]
+        item_name = requested_url.split('/')[-1]
+        return HttpResponse(bottleapp.inspect_gene_cluster(order_name, item_name), content_type='application/json')
 
     elif requested_url.startswith('data/get_AA_sequences_for_PC/'):
         param = requested_url.split('/')[-1]
