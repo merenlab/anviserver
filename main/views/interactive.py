@@ -51,8 +51,8 @@ def show_inspect(request, username, project_slug, inspection_type):
     html_page = ''
     if inspection_type == 'inspect':
         html_page = 'charts'
-    elif inspection_type == 'proteinclusters':
-        html_page = 'proteinclusters'
+    elif inspection_type == 'geneclusters':
+        html_page = 'geneclusters'
 
     return render(request, 'inspect.html', {'project': project, 
                                            'view_key': view_key,
