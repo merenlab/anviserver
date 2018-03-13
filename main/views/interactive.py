@@ -95,33 +95,58 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
     bottle_request = utils.MockBottleRequest(django_request=request)
     bottle_response = utils.MockBottleResponse()
 
-    interactive = project.get_interactive(read_only=read_only)
-    bottleapp = BottleApplication(interactive, interactive.args, bottle_request, bottle_response)
+    interactive = None
+    
+    if not requested_url.startswith('data/news'):
+        interactive = project.get_interactive(read_only=read_only)
+
+    bottleapp = BottleApplication(interactive, bottle_request, bottle_response)
 
     if requested_url.startswith('data/init'):
         download_zip_url = reverse('download_zip', args=[username, project_slug])
         if view_key != 'no_view_key':
             download_zip_url += '?view_key=' + view_key
 
+        default_view = interactive.default_view
+        default_order = interactive.p_meta['default_item_order']
+        autodraw = False
+        state_dict = None
+
+        if interactive.state_autoload:
+            state_dict = json.loads(interactive.states_table.states[interactive.state_autoload]['content'])
+
+            if state_dict['current-view'] in interactive.views:
+                default_view = state_dict['current-view']
+
+            if state_dict['order-by'] in interactive.p_meta['item_orders']:
+                default_order = state_dict['order-by']
+
+            autodraw = True
+
+        collection_dict = None
+        if interactive.collection_autoload:
+            collection_dict = json.loads(bottleapp.get_collection_dict(interactive.collection_autoload))
+
         return JsonResponse({ "title": project.name,
-                             "description": (interactive.p_meta['description']),
-                             "item_orders": (interactive.p_meta['default_item_order'], interactive.p_meta['item_orders']),
-                             "views": (interactive.default_view, dict(list(zip(list(interactive.views.keys()), list(interactive.views.keys()))))),
-                             "contigLengths": dict([tuple((c, interactive.splits_basic_info[c]['length']),) for c in interactive.splits_basic_info]),
-                             "defaultView": interactive.views[interactive.default_view],
+                             "description": interactive.p_meta['description'],
+                             "item_orders": (default_order, interactive.p_meta['item_orders'][default_order], list(interactive.p_meta['item_orders'].keys())),
+                             "views": (default_view, interactive.views[default_view], list(interactive.views.keys())),
+                             "contig_lengths": dict([tuple((c, interactive.splits_basic_info[c]['length']),) for c in interactive.splits_basic_info]),
                              "server_mode": True,
                              "mode": interactive.mode,
-                             "readOnly": interactive.read_only, 
-                             "binPrefix": "Bin_",
-                             "sessionId": 0,
-                             "samplesOrder": interactive.layers_order_data_dict,
-                             "sampleInformation": interactive.layers_additional_data_dict,
-                             "sampleInformationDefaultLayerOrder": interactive.layers_additional_data_keys,
-                             "stateAutoload": interactive.state_autoload,
-                             "collectionAutoload": interactive.collection_autoload,
-                             "noPing": True,
-                             "inspectionAvailable": interactive.auxiliary_profile_data_available,
-                             "sequencesAvailable": True if interactive.split_sequences else False,
+                             "read_only": interactive.read_only, 
+                             "bin_prefix": "Bin_",
+                             "session_id": 0,
+                             "layers_order": interactive.layers_order_data_dict,
+                             "layers_information": interactive.layers_additional_data_dict,
+                             "layers_information_default_order": interactive.layers_additional_data_keys,
+                             "check_background_process": False,
+                             "inspection_available": interactive.auxiliary_profile_data_available,
+                             "sequences_available": True if interactive.split_sequences else False,
+                             "functions_initialized": interactive.gene_function_calls_initiated,
+                             "state": (interactive.state_autoload, state_dict),
+                             "collection": collection_dict,
+                             "autodraw": autodraw,
                              "project": {
                                 'username': project.user.username,
                                 'fullname': project.user.userprofile.fullname if project.user.userprofile.fullname else project.user.username,
