@@ -10,6 +10,24 @@
 <form method="POST" action="" class="form-horizontal" enctype="multipart/form-data">
     {% csrf_token %}
     <fieldset>
+        {% if request.user.is_staff %}
+        <div class="col-md-12">
+            <div class="well">
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="name">Project Type:</label>
+                    <div class="col-md-10">
+                        <select class="form-control" id="project_type" onchange="changeForm();">
+                            <option value="manual" selected>Manual</option>
+                            <option value="metagenomics">Metagenomics</option>
+                            <option value="pangenomics">Pangenomics</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </fieldset>
+    <fieldset id="manual">
         <div class="col-md-12">
             <div class="well">
                 <legend>Project Details</legend>
@@ -110,6 +128,9 @@
                   Example project files can be found <strong><a href="/static/data/anvio_manual_example.zip">here</a></strong>
             </div>
         </div>
+    </fieldset>
+    <fieldset id="metagenomics">
+        metagenomics
     </fieldset>
     <div class="alert alert-danger" id="error_box" style="display: none;">
     </div>
@@ -312,6 +333,13 @@ $(document).ready(function() {
         $(textarea).val($(textarea).val().replace(/[ ]+/g, '\t'))
     });
 });
+
+function changeForm() {
+    var type = $('#project_type').val();
+    $('fieldset:not(:first)').prop('disabled', true).hide();
+    $('fieldset#' + type).prop('disabled', false).show();
+    console.log('fieldset#' + type);
+}
 </script>
 <style type="text/css">
     textarea {
