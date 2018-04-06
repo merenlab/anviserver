@@ -15,7 +15,7 @@ from main.models import Project, Team, TeamUser, ProjectTeam, ProjectLink
 from main.utils import get_project, put_project_file
 
 from anvio import dbops
-from anvio.tables import miscdata
+from anvio.tables import miscdata, collections
 from anvio.utils import get_TAB_delimited_file_as_dictionary
 
 @login_required
@@ -173,7 +173,7 @@ def new_project(request):
             bins_file = project.get_file_path('bins.txt', default=None)
             bins_info_file = project.get_file_path('bins-info.txt', default=None)
             if bins_file and bins_info_file:
-                collections = dbops.TablesForCollections(profile_db_path)
+                collections_table = collections.TablesForCollections(profile_db_path)
 
                 bins = get_TAB_delimited_file_as_dictionary(bins_file, no_header = True, column_names = ['split_id', 'bin_name'])
                 bins_info = get_TAB_delimited_file_as_dictionary(bins_info_file, no_header = True, column_names = ['bin_name', 'source', 'html_color'])
@@ -186,7 +186,7 @@ def new_project(request):
 
                     bin_data[bin_name].add(split_name)
 
-                collections.append('default', bin_data, bins_info)
+                collections_table.append('default', bin_data, bins_info)
                 project.num_collections = 1
 
             # try to get number of leaves
