@@ -237,5 +237,9 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
     elif requested_url.startswith('data/completeness'):
         return HttpResponse(bottleapp.completeness(), content_type='application/json')
 
+    elif requested_url.startswith('data/reroot_tree'):
+        return HttpResponse(bottleapp.reroot_tree(), content_type='application/json')
+
+
     raise Http404
 
