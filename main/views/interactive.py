@@ -127,11 +127,17 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
         if interactive.collection_autoload:
             collection_dict = json.loads(bottleapp.get_collection_dict(interactive.collection_autoload))
 
+        functions_sources = []
+        if interactive.mode == 'full' or interactive.mode == 'gene':
+            functions_sources = list(interactive.gene_function_call_sources)
+        elif interactive.mode == 'pan':
+            functions_sources = list(interactive.gene_clusters_function_sources)
+
         return JsonResponse({ "title": project.name,
                              "description": interactive.p_meta['description'],
                              "item_orders": (default_order, interactive.p_meta['item_orders'][default_order], list(interactive.p_meta['item_orders'].keys())),
                              "views": (default_view, interactive.views[default_view], list(interactive.views.keys())),
-                             "contig_lengths": dict([tuple((c, interactive.splits_basic_info[c]['length']),) for c in interactive.splits_basic_info]),
+                             "item_lengths": dict([tuple((c, interactive.splits_basic_info[c]['length']),) for c in interactive.splits_basic_info]),
                              "server_mode": True,
                              "mode": interactive.mode,
                              "read_only": interactive.read_only, 
@@ -141,12 +147,15 @@ def ajax_handler(request, username, project_slug, view_key, requested_url):
                              "layers_information": interactive.layers_additional_data_dict,
                              "layers_information_default_order": interactive.layers_additional_data_keys,
                              "check_background_process": False,
+                             "autodraw": autodraw,
                              "inspection_available": interactive.auxiliary_profile_data_available,
                              "sequences_available": True if interactive.split_sequences else False,
                              "functions_initialized": interactive.gene_function_calls_initiated,
+                             "functions_sources": functions_sources,
                              "state": (interactive.state_autoload, state_dict),
                              "collection": collection_dict,
-                             "autodraw": autodraw,
+                             "samples": interactive.p_meta['samples'] if interactive.mode in ['full', 'refine'] else [],
+                             "load_full_state": True,
                              "project": {
                                 'username': project.user.username,
                                 'fullname': project.user.userprofile.fullname if project.user.userprofile.fullname else project.user.username,
