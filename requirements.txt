@@ -1,4 +1,4 @@
-Django==1.9.8
+django
 django-bootstrap3
-django-registration-redux==1.4
-raven==6.1.0
+django-registration-redux
+raven
