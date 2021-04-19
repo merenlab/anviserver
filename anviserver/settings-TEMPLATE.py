@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 import raven
-from anviserver import settings_secrets
+from anviserver import secrets
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +22,7 @@ USER_DATA_DIR = os.path.join(BASE_DIR, 'userdata')
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = settings_secrets.SECRET_KEY
+SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -137,7 +137,7 @@ LOGIN_REDIRECT_URL = '/'
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_PASSWORD = settings_secrets.EMAIL_HOST_PASSWORD
+EMAIL_HOST_PASSWORD = secrets.EMAIL_HOST_PASSWORD
 EMAIL_HOST_USER = 'anvi.server@gmail.com'
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
@@ -147,6 +147,6 @@ SITE_ID = 1
 
 # Sentry settings
 RAVEN_CONFIG = {
-    'dsn': settings_secrets.RAVEN_DSN,
+    'dsn': secrets.RAVEN_DSN,
     'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
 }
