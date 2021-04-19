@@ -1,4 +1,5 @@
 django
 django-bootstrap3
 django-registration-redux
+gunicorn
 raven
