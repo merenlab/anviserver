@@ -1,5 +1,8 @@
 *.pyc
 userdata/
 db.sqlite3
-anviserver/settings_secrets.py
+anviserver/settings.py
+anviserver/secrets.py
 main/static/interactive
+nginx.conf
+gunicorn.conf.py
