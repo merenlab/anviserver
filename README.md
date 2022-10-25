@@ -27,7 +27,7 @@ conda install -y nginx
 Copy-pasta the following lines into your terminal window to update the conda activation file for anvi'o to include point the right `PYTHONPATH` for anvi'server (the contents of this file is run every time the conda environment `anvi-dev` is initiated, with this update, it will also take care of anvi'server buisness):
 
 ``` bash
-cat <<EOF >${CONDA_PREFIX}/etc/conda/activate.d/anvio.sh
+cat <<EOF >${CONDA_PREFIX}/etc/conda/activate.d/anvio-server.sh
 
 # including additional steps to setup anvi'server properly. the following
 # lines ensure (1) Python knows where to find anvi'server libraries and
@@ -42,7 +42,7 @@ EOF
 It is a good idea to take a look at the final form of this file now to make sure everything looks alright:
 
 ```
-${CONDA_PREFIX}/etc/conda/activate.d/anvio.sh
+${CONDA_PREFIX}/etc/conda/activate.d/anvio-server.sh
 ```
 
 # Initial settings for anvi'server
