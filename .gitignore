@@ -6,3 +6,22 @@ anviserver/secrets.py
 main/static/interactive
 nginx.conf
 gunicorn.conf.py
+
+### Django ###
+*.log
+*.pot
+__pycache__/
+local_settings.py
+db.sqlite3-journal
+media
+.idea
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
