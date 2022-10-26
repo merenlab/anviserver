@@ -6,6 +6,7 @@ anviserver/secrets.py
 main/static/interactive
 nginx.conf
 gunicorn.conf.py
+/anviserver/settings/local.py
 
 ### Django ###
 *.log

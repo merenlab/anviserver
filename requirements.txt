@@ -1,5 +1,6 @@
-django
+django==3.2.16
 django-bootstrap3
 django-registration-redux
 gunicorn
 raven
+importlib-metadata==3.9.0
