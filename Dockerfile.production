@@ -1,0 +1,49 @@
+FROM node:16-alpine AS deps
+
+ENV NODE_ENV=production
+
+RUN apk add --no-cache libc6-compat
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM node:16-alpine AS builder
+
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY next.config.js ./
+COPY package.json package-lock.json ./
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY api-lib ./api-lib
+COPY assets ./assets
+COPY components ./components
+COPY lib ./lib
+COPY page-components ./page-components
+COPY pages ./pages
+COPY public ./public
+COPY jsconfig.json ./
+
+RUN npm run build
+
+FROM node:16-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+RUN addgroup --system --guid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/static ./.next/static
+
+#Create new user for not using root user.
+USER nextjs 
+
+CMD ["node", "server.js"]

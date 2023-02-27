@@ -1,0 +1,21 @@
+.footer {
+  left: 0px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  font-size: 0.875rem;
+  background: var(--accents-1);
+  border-top: 1px solid var(--accents-2);
+  padding: 1rem;
+  text-align: center;
+}
+
+.icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--accents-7);
+}
+
+.github {
+  margin-right: 15px;
+}

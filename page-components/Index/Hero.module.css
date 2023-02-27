@@ -1,0 +1,65 @@
+.title {
+  font-size: 7rem;
+  text-align: center;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 24px 0 64px;
+}
+
+.title > span {
+  display: block;
+  padding-bottom: 10px;
+  margin-bottom: -20px;
+}
+
+.anvihero{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.anvi {
+  margin-top: 100px;
+  margin-right: 150px;
+  background: linear-gradient(90deg, #2F7A60, #d0d1d1);
+  color: var(--themed-fg, var(--accents-7));
+  background: var(--themed-bg, var(--accents-7));
+}
+
+.server {
+  margin-right: 150px;
+  background: linear-gradient(90deg, #2F7A60, #90D3BE);
+  color: var(--themed-fg, var(--accents-7));
+  background: var(--themed-bg, var(--accents-7));
+}
+
+.anvi,
+.server {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.buttons {
+  max-width: 26rem;
+  margin: 64px auto 64px;
+}
+
+.button {
+  height: 50px;
+  padding: 0px 25px;
+  min-width: 200px;
+}
+
+.subtitle {
+  color: var(--secondary);
+  font-weight: 400;
+  font-size: 1.25rem;
+  text-align: center;
+  margin: 8px 0 64px;
+}
+.image {
+  object-fit: cover;
+}

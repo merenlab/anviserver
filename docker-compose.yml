@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  app:
+    image: anviserver
+    build:
+      dockerfile: Dockerfile 
+    ports:
+      - 3000:3000
+    volumes:
+      - ./pages:/app/pages
+      - ./public:/app/public
+      - ./components:/app/components
+      - ./page-components:/app/page-components
+
+    anvio:
+      image: meren/anvio:7.1_main_0522
+      env_file:
+      - ./.env.local
