@@ -3,7 +3,7 @@ var docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
 docker.run(
   'meteahaansever/anviserver:latest',
-  [],
+  ['anvi-self-test'],
   process.stdout,
   {
     Volumes: {
