@@ -29,6 +29,7 @@
     "cloudinary": "^1.30.0",
     "clsx": "^1.1.1",
     "connect-mongo": "^4.6.0",
+    "dockerode": "^3.3.5",
     "express-session": "^1.17.3",
     "modern-normalize": "^1.1.0",
     "mongodb": "^4.7.0",
