@@ -16,7 +16,7 @@ def generate_random_pk():
     return random.SystemRandom().getrandbits(32)
 
 class Project(models.Model):
-    user = models.ForeignKey(User, default=1)
+    user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=100)
     is_public = models.BooleanField(default=False)
@@ -124,7 +124,7 @@ class ProjectTeam(models.Model):
         return str(self.project) + ' shared with ' + str(self.team)
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     institution = models.CharField(max_length=100, blank=True, null=True)
     orcid = models.CharField(max_length=100, blank=True, null=True)
     fullname = models.CharField(max_length=100, blank=True, null=True)

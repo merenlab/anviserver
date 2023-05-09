@@ -1,5 +1,5 @@
 # long (100+) random key alphanumeric and contains special charachters, see django documentation for details
-SECRET_KEY = ''
+SECRET_KEY = 'abc'
 
  # password for e-mail
 EMAIL_HOST_PASSWORD = ''

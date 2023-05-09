@@ -71,6 +71,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="name">Yaml</label>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary btn-sm">
+                                Browse&hellip; <input type="file" style="display: none;" id="yaml.yml" name="yaml.yml" /></span>
+                            </label>
+                            <input type="text" class="form-control fileUploadTxt input-sm" readonly value="Yaml file contains reproducible information of your project. " />
+                            <label class="input-group-btn"><span class="btn btn-default btn-sm" data-toggle="modal" data-target="#modalExampleYaml">Example</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="well">
                 <legend>Layers Files</legend>
@@ -265,6 +278,49 @@ CTGAATAGCACGGCCCCCGG</textarea>
         </div>
     </div>
 </div>
+<div id="modalExampleYaml" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-m">
+        <div class="modal-content">
+            <div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Example for Yaml</h4></div>
+            <div class="modal-body">
+                Yaml file must be Yaml formatted file..
+                <textarea>
+project:
+  title: "Visualization of infant gut data"
+  description: "longer description here"
+  tag: "INFANT-GUT"
+
+author:
+  name: A. Murat Eren
+  email: meren@hifmb.de
+  affiliation: "HIFMB"
+  web: "https://merenlab.org"
+
+work_directory: "INFANT-GUT-TUTORIAL"
+
+setup:
+  - "curl -L https://figshare.com/ndownloader/files/31131400 -o INFANT-GUT-TUTORIAL.tar.gz"
+  - "tar -zxvf INFANT-GUT-TUTORIAL.tar.gz"
+  - "rm -rf INFANT-GUT-TUTORIAL.tar.gz"
+
+run:
+  - command: "anvi-estimate-scg-taxonomy -c CONTIGS.db --metagenome-mode"
+    description: "quick look at the taxonomic composition of the metagenome"
+
+  - command: "anvi-interactive -p PROFILE.db -c CONTIGS.db"
+    description: "initiate interactive interface"
+
+  - command: "anvi-show-collections-and-bins -p PROFILE.db"
+    description: "show collections and bins"
+</textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="modalExampleLayerOrder" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-m">
         <div class="modal-content">
@@ -323,7 +379,7 @@ $(document).ready(function() {
         margin: 10px 0px;
     }
 </style>
-{% endblock %} {% block header %} {% load staticfiles %}
+{% endblock %} {% block header %} {% load static %}
 <script src="{% static 'js/jquery.form.js' %}"></script>
 <script src="{% static 'js/newick_parser.js' %}"></script>
 <script src="{% static 'js/papaparse.js' %}"></script>

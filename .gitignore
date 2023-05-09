@@ -6,3 +6,4 @@ anviserver/secrets.py
 main/static/interactive
 nginx.conf
 gunicorn.conf.py
+.idea/
